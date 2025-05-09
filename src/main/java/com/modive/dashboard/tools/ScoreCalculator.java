@@ -127,7 +127,7 @@ public class ScoreCalculator {
         return Math.max(0, 100 - (10 * drive.getLaneDepartures().size()));
     }
 
-    // 사고 예방 점수: 안전거리 유지 (초당 3점 감점)
+    // 사고 예방 점수: 안전거리 미유지 (초당 3점 감점)
     private double calcFollowingDistanceScore(Drive drive) {
         long totalSeconds = drive.getFollowingDistanceEvents().stream()
                 .mapToLong(event -> {
