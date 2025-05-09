@@ -1,11 +1,13 @@
 package com.modive.dashboard.service;
 
+import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.repository.DriveDashboardRepository;
 import com.modive.dashboard.repository.DriveRepository;
+import com.modive.dashboard.tools.LLMRequestGenerator;
 import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     private ScoreCalculator scoreCalculator;
     @Autowired
     private DriveDashboardRepository driveDashboardRepository;
+    @Autowired
+    private LLMClient llmClient;
+    @Autowired
+    private LLMRequestGenerator llmRequestGenerator;
 
     // 1. 주행 후 대시보드 생성
     @Override
@@ -34,7 +40,11 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         ScoreDto score = scoreCalculator.calculateDriveScore(drive);
 
         // 1-3. 피드백 받아오기
-        DriveFeedbacksDto feedbacks = new DriveFeedbacksDto(); // TODO: LLM 서비스에서 피드백 받아오기
+        DriveFeedbacksDto feedbacks = new DriveFeedbacksDto();
+        // TODO: LLM 서비스에서 피드백 받아오기
+        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(drive);
+        System.out.println(params); //임시
+//        DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(params);
 
         // 1-4. 저장
         DriveDashboard dashboard = new DriveDashboard();
@@ -226,7 +236,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
         // SpeedLogs
         List<Drive.SpeedLog> speedLogs = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i <= 21; i++) {
             Drive.SpeedLog log = new Drive.SpeedLog();
             log.setPeriod(i);
             log.setMaxSpeed(30 + random.nextInt(90));  // 30~120 km/h
