@@ -12,6 +12,7 @@ public class LLMRequestGenerator {
     public DriveFeedbackRequest generateDriveFeedbackRequest(Drive drive) {
         DriveFeedbackRequest request = new DriveFeedbackRequest();
 
+        //<editor-fold desc="# Calculate details">
         // 급가속/급감속 수
         request.setRapidAccelerationDecelerationCount(
                 drive.getSuddenAccelerations() != null
@@ -99,6 +100,7 @@ public class LLMRequestGenerator {
             inactiveCount = drive.getInactiveMoments().size(); // 또는 더 복잡한 계산 방식 적용 가능
         }
         request.setInactivityCount(inactiveCount);
+        //</editor-fold>
 
         return request;
     }
