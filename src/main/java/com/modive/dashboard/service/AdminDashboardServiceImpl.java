@@ -2,16 +2,16 @@ package com.modive.dashboard.service;
 
 import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
-import com.modive.dashboard.dto.admin.AdminResponse;
-import com.modive.dashboard.dto.admin.MonthlyDrivesStatistics;
-import com.modive.dashboard.dto.admin.TotalDriveCount;
+import com.modive.dashboard.dto.admin.*;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.entity.Statistics;
+import com.modive.dashboard.entity.TotalDashboard;
 import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.repository.DriveDashboardRepository;
 import com.modive.dashboard.repository.DriveRepository;
 import com.modive.dashboard.repository.StatisticsRepository;
+import com.modive.dashboard.repository.TotalDashboardRepository;
 import com.modive.dashboard.tools.LLMRequestGenerator;
 import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,8 @@ import java.util.*;
 public class AdminDashboardServiceImpl implements AdminDashboardService {
     @Autowired
     private StatisticsRepository statisticsRepository;
+    @Autowired
+    private TotalDashboardRepository totalDashboardRepository;
 
     // 1. 총 주행 수
     @Override
@@ -77,6 +79,29 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         }
 
         return statisticsList;
+    }
+
+    // 3. 사용자별 운전 횟수 (사용자 정보)
+    @Override
+    public List<DriveCountByUser> getDriveCountByUser(UserIdListRequest userIds) {
+
+        List<DriveCountByUser> list = new ArrayList<>();
+
+        for (String userId : userIds.getUserIds()) {
+            TotalDashboard totalDashboard = totalDashboardRepository.findById(userId);
+
+            int count = 0;
+            if (totalDashboard != null) {
+                count = totalDashboard.getTotalDriveCount();
+            }
+
+            list.add(new DriveCountByUser(
+                    userId,
+                    count
+            ));
+        }
+
+        return list;
     }
 
 }
