@@ -1,5 +1,6 @@
 package com.modive.dashboard.service;
 
+import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.ScoreDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
 import com.modive.dashboard.entity.Drive;
@@ -15,11 +16,12 @@ public interface TotalDashboardService {
     TotalDashboardResponse getTotalDashboard(String userId);
 
     // 3. 주간 맞춤형 리포트 생성 및 조회
-    Object makeReport(String userId, UserType userType);
+    ReportDto makeReport(String userId);
 
     // 4. 누적 대시보드 업데이트
     void updateTotalDashboard(String userId, DriveDashboard dashboard);
 
+    // 5. 평균 업데이트
     void updateStatistics(Drive drive, ScoreDto score);
 
 }

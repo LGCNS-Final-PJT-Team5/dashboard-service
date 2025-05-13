@@ -1,5 +1,6 @@
 package com.modive.dashboard.service;
 
+import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.ScoreDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
 import com.modive.dashboard.entity.Drive;
@@ -52,7 +53,10 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
 
     // 3. 주간 맞춤형 리포트 생성 및 조회
     @Override
-    public Object makeReport(String userId, UserType userType) {
+    public ReportDto makeReport(String userId) {
+
+
+
         return null;
     }
 

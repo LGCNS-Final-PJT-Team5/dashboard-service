@@ -1,5 +1,6 @@
 package com.modive.dashboard.controller;
 
+import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
 import com.modive.dashboard.service.TotalDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,11 @@ public class TotalDriveDashboardController {
 
     // 3. 주간 피드백 생성 및 조회
     @GetMapping("/report")
-    public ResponseEntity<TotalDashboardResponse> getTotalDashboardReport(
+    public ResponseEntity<ReportDto> getTotalDashboardReport(
             @RequestHeader("X-User-Id") String userId
     ) {
 
-        return null;
+        ReportDto report = totalDashboardService.makeReport(userId);
+        return report == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(report);
     }
 }
