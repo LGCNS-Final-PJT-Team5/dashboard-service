@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -75,19 +77,39 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
 
     // 5. 평균 업데이트
     public void updateStatistics(Drive drive, ScoreDto score) {
-        Statistics statistics = statisticsRepository.find("total");
+        // Total Statistics
+        Statistics totalStatistics = statisticsRepository.find("total");
 
-        if (statistics == null) {
-            statistics = new Statistics("total");
+        if (totalStatistics == null) {
+            totalStatistics = new Statistics("total");
         }
 
-        statistics.setTotalDriveCount(statistics.getTotalDriveCount() + 1);
-        statistics.setTotalDriveMinutes(statistics.getTotalDriveMinutes() + Duration.between(drive.getStartTime(), drive.getEndTime()).toMinutes());
-        statistics.setAverageScore(scoreCalculator.calculateTotalScore(statistics.getAverageScore(), score, statistics.getTotalDriveCount()));
+        totalStatistics.setTotalDriveCount(totalStatistics.getTotalDriveCount() + 1);
+        totalStatistics.setTotalDriveMinutes(totalStatistics.getTotalDriveMinutes() + Duration.between(drive.getStartTime(), drive.getEndTime()).toMinutes());
+        totalStatistics.setAverageScore(scoreCalculator.calculateTotalScore(totalStatistics.getAverageScore(), score, totalStatistics.getTotalDriveCount()));
 
-        statisticsRepository.save(statistics);
+        statisticsRepository.save(totalStatistics);
 
-        System.out.println(statistics); // 임시
+        System.out.println(totalStatistics); // 임시
+
+        // Monthly Statistics
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+        LocalDate today = LocalDate.now();
+        String month = today.format(formatter);
+        Statistics monthStatistics = statisticsRepository.find(month);
+
+        if (monthStatistics == null) {
+            monthStatistics = new Statistics(month);
+        }
+
+        monthStatistics.setTotalDriveCount(monthStatistics.getTotalDriveCount() + 1);
+        monthStatistics.setTotalDriveMinutes(monthStatistics.getTotalDriveMinutes() + Duration.between(drive.getStartTime(), drive.getEndTime()).toMinutes());
+        monthStatistics.setAverageScore(scoreCalculator.calculateTotalScore(monthStatistics.getAverageScore(), score, monthStatistics.getTotalDriveCount()));
+
+        statisticsRepository.save(monthStatistics);
+
+        System.out.println(monthStatistics); // 임시
+
     }
     //</editor-folder>
 }
