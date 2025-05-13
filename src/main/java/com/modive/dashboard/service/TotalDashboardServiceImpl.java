@@ -75,11 +75,10 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
 
     // 5. 평균 업데이트
     public void updateStatistics(Drive drive, ScoreDto score) {
-        Statistics statistics = statisticsRepository.find("statistics");
+        Statistics statistics = statisticsRepository.find("total");
 
         if (statistics == null) {
-            statistics = new Statistics();
-            statistics.setAverageScore(new ScoreDto());
+            statistics = new Statistics("total");
         }
 
         statistics.setTotalDriveCount(statistics.getTotalDriveCount() + 1);
