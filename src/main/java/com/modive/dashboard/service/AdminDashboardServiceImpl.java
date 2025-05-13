@@ -3,6 +3,7 @@ package com.modive.dashboard.service;
 import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
 import com.modive.dashboard.dto.admin.AdminResponse;
+import com.modive.dashboard.dto.admin.MonthlyDrivesStatistics;
 import com.modive.dashboard.dto.admin.TotalDriveCount;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
@@ -27,6 +28,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
     @Autowired
     private StatisticsRepository statisticsRepository;
 
+    // 1. 총 주행 수
     @Override
     public TotalDriveCount getDriveCount() {
         int totalDriveCount = getDriveCountOrZero("total");
@@ -46,10 +48,35 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
         return new TotalDriveCount(totalDriveCount, changeRate);
     }
-
     private int getDriveCountOrZero(String key) {
         Statistics stats = statisticsRepository.find(key);
         return (stats != null) ? stats.getTotalDriveCount() : 0;
+    }
+
+    // 2. 월별 운전 횟수 조회 (그래프)
+    @Override
+    public List<MonthlyDrivesStatistics> getDriveCountByMonth() {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+        LocalDate today = LocalDate.now();
+
+        List<MonthlyDrivesStatistics> statisticsList = new ArrayList<>();
+
+        for (int i = 0; i < 12; i++) {
+            LocalDate targetMonth = today.minusMonths(i);
+            String key = targetMonth.format(formatter);
+            Statistics stats = statisticsRepository.find(key);
+
+            int count = (stats != null) ? stats.getTotalDriveCount() : 0;
+
+            statisticsList.add(new MonthlyDrivesStatistics(
+                    targetMonth.getYear(),
+                    targetMonth.getMonthValue(),
+                    count
+            ));
+        }
+
+        return statisticsList;
     }
 
 }

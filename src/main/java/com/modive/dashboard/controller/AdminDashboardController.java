@@ -1,6 +1,7 @@
 package com.modive.dashboard.controller;
 
 import com.modive.dashboard.dto.admin.AdminResponse;
+import com.modive.dashboard.dto.admin.MonthlyDrivesStatistics;
 import com.modive.dashboard.dto.admin.TotalDriveCount;
 import com.modive.dashboard.service.AdminDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Month;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +40,14 @@ public class AdminDashboardController {
 
 
     // 2. 월별 운전 횟수 조회 (그래프)
+    @GetMapping("/monthly-stats")
+    public ResponseEntity<AdminResponse<List<MonthlyDrivesStatistics>>> getMonthlyStats() {
+        List<MonthlyDrivesStatistics> list = adminDashboardService.getDriveCountByMonth();
+
+        AdminResponse<List<MonthlyDrivesStatistics>> adminResponse = new AdminResponse<>(200, "월별 운전 횟수 조회에 성공하였습니다.",  Map.of("monthlyDrivesStatistics", list));
+
+        return ResponseEntity.ok(adminResponse);
+    }
 
     // 3. 사용자별 운전 횟수 (사용자 정보)
 
