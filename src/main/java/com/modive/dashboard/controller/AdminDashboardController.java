@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/dashboard/drives")
 public class AdminDashboardController {
@@ -21,7 +24,7 @@ public class AdminDashboardController {
 
         if (totalDriveCount != null) {
             AdminResponse<TotalDriveCount> adminResponse =
-                    new AdminResponse<>(200, "발급 사유별 월별 통계에 성공했습니다.", totalDriveCount);
+                    new AdminResponse<>(200, "발급 사유별 월별 통계에 성공했습니다.",  Map.of("totalDriveCount", totalDriveCount));
             return ResponseEntity.ok(adminResponse); // 200 OK
         } else {
             AdminResponse<TotalDriveCount> adminResponse =
