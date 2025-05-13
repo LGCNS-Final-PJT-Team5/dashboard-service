@@ -6,6 +6,7 @@ import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.entity.TotalDashboard;
 import com.modive.dashboard.enums.UserType;
 import com.modive.dashboard.repository.TotalDashboardRepository;
+import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import java.util.UUID;
 public class TotalDashboardServiceImpl implements TotalDashboardService {
     @Autowired
     private TotalDashboardRepository totalDashboardRepository;
+    @Autowired
+    private ScoreCalculator scoreCalculator;
 
     // 1. 누적 대시보드 생성
     @Override
@@ -49,7 +52,13 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
 
     // 4. 누적 대시보드 업데이트
     @Override
-    public void updateTotalDashboard(Long userId) {
+    public void updateTotalDashboard(String userId, DriveDashboard driveDashboard) {
+        TotalDashboard totalDashboard = totalDashboardRepository.findById(userId);
 
+        totalDashboard.setUpdatedAt(driveDashboard.getEndTime());
+        totalDashboard.setTotalDriveCount(totalDashboard.getTotalDriveCount() + 1);
+        totalDashboard.setScores(scoreCalculator.calculateTotalScore(totalDashboard.getScores(), driveDashboard.getScores(), totalDashboard.getTotalDriveCount()));
+
+        totalDashboardRepository.save(totalDashboard);
     }
 }

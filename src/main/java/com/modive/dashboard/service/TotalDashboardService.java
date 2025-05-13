@@ -1,6 +1,7 @@
 package com.modive.dashboard.service;
 
 import com.modive.dashboard.dto.TotalDashboardResponse;
+import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.enums.UserType;
 
 public interface TotalDashboardService {
@@ -15,6 +16,6 @@ public interface TotalDashboardService {
     Object makeReport(String userId, UserType userType);
 
     // 4. 누적 대시보드 업데이트
-    void updateTotalDashboard(Long userId);
+    void updateTotalDashboard(String userId, DriveDashboard dashboard);
 
 }

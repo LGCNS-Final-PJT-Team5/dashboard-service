@@ -27,6 +27,8 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     private LLMClient llmClient;
     @Autowired
     private LLMRequestGenerator llmRequestGenerator;
+    @Autowired
+    private TotalDashboardService totalDashboardService;
 
     // 1. 주행 후 대시보드 생성
     @Override
@@ -57,6 +59,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         dashboard.setFeedbacks(feedbacks);
 
         driveDashboardRepository.save(dashboard);
+        totalDashboardService.updateTotalDashboard(userId, dashboard);
     }
 
     // 2. 주행 후 대시보드 조회

@@ -155,4 +155,33 @@ public class ScoreCalculator {
         return Math.max(0, 100 - (count * 10));
     }
     // </editor-fold>
+
+    public ScoreDto calculateTotalScore(ScoreDto totalScore, ScoreDto driveScore, int totalDriveCount) {
+        if (totalDriveCount <= 0) {
+            return driveScore;
+        }
+
+        totalScore.idlingScore = (totalScore.idlingScore * (totalDriveCount - 1) + driveScore.idlingScore) / totalDriveCount;
+        totalScore.speedMaintainScore = (totalScore.speedMaintainScore * (totalDriveCount - 1) + driveScore.speedMaintainScore) / totalDriveCount;
+        totalScore.ecoScore = (totalScore.ecoScore * (totalDriveCount - 1) + driveScore.ecoScore) / totalDriveCount;
+
+        totalScore.accelerationScore = (totalScore.accelerationScore * (totalDriveCount - 1) + driveScore.accelerationScore) / totalDriveCount;
+        totalScore.sharpTurnScore = (totalScore.sharpTurnScore * (totalDriveCount - 1) + driveScore.sharpTurnScore) / totalDriveCount;
+        totalScore.overSpeedScore = (totalScore.overSpeedScore * (totalDriveCount - 1) + driveScore.overSpeedScore) / totalDriveCount;
+        totalScore.safetyScore = (totalScore.safetyScore * (totalDriveCount - 1) + driveScore.safetyScore) / totalDriveCount;
+
+        totalScore.reactionScore = (totalScore.reactionScore * (totalDriveCount - 1) + driveScore.reactionScore) / totalDriveCount;
+        totalScore.laneDepartureScore = (totalScore.laneDepartureScore * (totalDriveCount - 1) + driveScore.laneDepartureScore) / totalDriveCount;
+        totalScore.followingDistanceScore = (totalScore.followingDistanceScore * (totalDriveCount - 1) + driveScore.followingDistanceScore) / totalDriveCount;
+        totalScore.accidentPreventionScore = (totalScore.accidentPreventionScore * (totalDriveCount - 1) + driveScore.accidentPreventionScore) / totalDriveCount;
+
+        totalScore.drivingTimeScore = (totalScore.drivingTimeScore * (totalDriveCount - 1) + driveScore.drivingTimeScore) / totalDriveCount;
+        totalScore.inactivityScore = (totalScore.inactivityScore * (totalDriveCount - 1) + driveScore.inactivityScore) / totalDriveCount;
+        totalScore.attentionScore = (totalScore.attentionScore * (totalDriveCount - 1) + driveScore.attentionScore) / totalDriveCount;
+
+        totalScore.totalScore = (totalScore.totalScore * (totalDriveCount - 1) + driveScore.totalScore) / totalDriveCount;
+
+        return totalScore;
+    }
+
 }

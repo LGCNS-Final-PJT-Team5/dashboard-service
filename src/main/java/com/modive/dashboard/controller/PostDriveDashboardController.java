@@ -21,8 +21,6 @@ public class PostDriveDashboardController {
 
     @Autowired
     private PostDriveDashboardService postDriveDashboardService;
-    @Autowired
-    private TotalDashboardService totalDashboardService;
 
     // 1. 주행 후 대시보드 생성 및 누적 대시보드 업데이트 (주행 완료 처리)
     @PostMapping("/{driveId}")
@@ -33,7 +31,6 @@ public class PostDriveDashboardController {
 
         // TODO: 예외 처리하기
         postDriveDashboardService.createPostDriveDashboard(userId, driveId);
-        //totalDashboardService.updateTotalDashboard(driveId);
 
         return ResponseEntity.noContent().build();
     }
