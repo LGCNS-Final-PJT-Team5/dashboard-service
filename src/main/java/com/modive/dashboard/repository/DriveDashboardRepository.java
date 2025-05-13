@@ -70,4 +70,5 @@ public class DriveDashboardRepository{
 
         return dynamoDBMapper.scan(DriveDashboard.class, scanExpression);
     }
+
 }

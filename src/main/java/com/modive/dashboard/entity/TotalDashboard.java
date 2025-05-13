@@ -13,7 +13,6 @@ import java.time.Instant;
 public class TotalDashboard {
     // Partition Key
     private String userId;
-    // Sort Key
     private String dashboardId;
 
     private ScoreDto scores;
@@ -30,11 +29,6 @@ public class TotalDashboard {
     @DynamoDBHashKey(attributeName = "userId")
     public String getUserId() {
         return userId;
-    }
-
-    @DynamoDBRangeKey(attributeName = "dashboardId")
-    public String getDashboardId() {
-        return dashboardId;
     }
 
 }

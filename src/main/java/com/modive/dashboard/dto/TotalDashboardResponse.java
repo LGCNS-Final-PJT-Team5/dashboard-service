@@ -1,16 +1,25 @@
 package com.modive.dashboard.dto;
 
+import com.modive.dashboard.entity.TotalDashboard;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class TotalDashboardResponse {
-    private String userId;                   // 사용자 ID
-    private LocalDateTime lastDrive;         // 최근 운전일
-    private int driveCount;                  // 누적운전횟수
+    public String userId;                   // 사용자 ID
+    public Instant lastDrive;         // 최근 운전일
+    public int driveCount;                  // 누적운전횟수
 
-    private ScoreDto scores;
+    public ScoreDto scores;
+
+    public TotalDashboardResponse(TotalDashboard dashboard)
+    {
+        this.userId = dashboard.getUserId();
+        this.lastDrive = dashboard.getUpdatedAt();
+        this.driveCount = dashboard.getTotalDriveCount();
+        this.scores = dashboard.getScores();
+    }
 }

@@ -64,4 +64,25 @@ public class DynamoDBTableInitializer {
         }
     }
 
+    @PostConstruct
+    public void createTotalDashboardIfNotExists() {
+        ListTablesResult tables = dynamoDB.listTables();
+        if (!tables.getTableNames().contains("total-dashboard")) {
+            CreateTableRequest request = new CreateTableRequest()
+                    .withTableName("total-dashboard")
+                    .withKeySchema(
+                            new KeySchemaElement("userId", KeyType.HASH)
+                    )
+                    .withAttributeDefinitions(
+                            new AttributeDefinition("userId", ScalarAttributeType.S)
+                    )
+                    .withBillingMode(BillingMode.PAY_PER_REQUEST);
+
+            dynamoDB.createTable(request);
+            System.out.println("✅ DynamoDB 테이블 'dashboard-dashboard' 생성됨");
+        } else {
+            System.out.println("ℹ️ DynamoDB 테이블 'dashboard-dashboard' 이미 존재함");
+        }
+    }
+
 }
