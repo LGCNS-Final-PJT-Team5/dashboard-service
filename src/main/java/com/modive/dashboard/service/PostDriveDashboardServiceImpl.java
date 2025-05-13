@@ -59,7 +59,9 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         dashboard.setFeedbacks(feedbacks);
 
         driveDashboardRepository.save(dashboard);
+        // 비동기 처리하자.
         totalDashboardService.updateTotalDashboard(userId, dashboard);
+        totalDashboardService.updateStatistics(drive, score);
     }
 
     // 2. 주행 후 대시보드 조회

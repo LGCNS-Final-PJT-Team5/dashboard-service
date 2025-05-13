@@ -85,4 +85,25 @@ public class DynamoDBTableInitializer {
         }
     }
 
+    @PostConstruct
+    public void createSummaryDashboardIfNotExists() {
+        ListTablesResult tables = dynamoDB.listTables();
+        if (!tables.getTableNames().contains("statistics")) {
+            CreateTableRequest request = new CreateTableRequest()
+                    .withTableName("statistics")
+                    .withKeySchema(
+                            new KeySchemaElement("statId", KeyType.HASH)
+                    )
+                    .withAttributeDefinitions(
+                            new AttributeDefinition("statId", ScalarAttributeType.S)
+                    )
+                    .withBillingMode(BillingMode.PAY_PER_REQUEST);
+
+            dynamoDB.createTable(request);
+            System.out.println("✅ DynamoDB 테이블 'statistics' 생성됨");
+        } else {
+            System.out.println("ℹ️ DynamoDB 테이블 'statistics' 이미 존재함");
+        }
+    }
+
 }
