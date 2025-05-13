@@ -2,6 +2,7 @@ package com.modive.dashboard.service;
 
 import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
+import com.modive.dashboard.dto.detail.*;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.enums.ScoreType;

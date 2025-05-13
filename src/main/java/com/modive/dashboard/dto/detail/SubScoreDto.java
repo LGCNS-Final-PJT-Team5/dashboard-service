@@ -1,7 +1,6 @@
-package com.modive.dashboard.dto;
+package com.modive.dashboard.dto.detail;
 
 import java.util.List;
-import java.util.Map;
 
 public class SubScoreDto {
     public double score;

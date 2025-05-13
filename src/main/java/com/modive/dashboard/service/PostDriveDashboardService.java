@@ -1,10 +1,8 @@
 package com.modive.dashboard.service;
 
 import com.modive.dashboard.dto.DriveDashboardResponse;
-import com.modive.dashboard.dto.DriveDetailDto;
+import com.modive.dashboard.dto.detail.DriveDetailDto;
 import com.modive.dashboard.dto.DriveListDto;
-import com.modive.dashboard.entity.Drive;
-import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.enums.ScoreType;
 
 import java.util.List;

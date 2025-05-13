@@ -1,4 +1,4 @@
-package com.modive.dashboard.dto;
+package com.modive.dashboard.dto.detail;
 
 public class SafeDetailDto extends DriveDetailDto {
     public SubScoreDto acceleration;
