@@ -79,9 +79,9 @@ public class DynamoDBTableInitializer {
                     .withBillingMode(BillingMode.PAY_PER_REQUEST);
 
             dynamoDB.createTable(request);
-            System.out.println("✅ DynamoDB 테이블 'dashboard-dashboard' 생성됨");
+            System.out.println("✅ DynamoDB 테이블 'total-dashboard' 생성됨");
         } else {
-            System.out.println("ℹ️ DynamoDB 테이블 'dashboard-dashboard' 이미 존재함");
+            System.out.println("ℹ️ DynamoDB 테이블 'total-dashboard' 이미 존재함");
         }
     }
 
