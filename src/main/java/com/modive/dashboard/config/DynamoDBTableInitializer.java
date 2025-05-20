@@ -53,7 +53,17 @@ public class DynamoDBTableInitializer {
                     )
                     .withAttributeDefinitions(
                             new AttributeDefinition("userId", ScalarAttributeType.S),
-                            new AttributeDefinition("driveId", ScalarAttributeType.S)
+                            new AttributeDefinition("driveId", ScalarAttributeType.S),
+                            new AttributeDefinition("startTime", ScalarAttributeType.S)
+                    )
+                    .withGlobalSecondaryIndexes(
+                            new GlobalSecondaryIndex()
+                                    .withIndexName("userId-startTime-index")
+                                    .withKeySchema(
+                                            new KeySchemaElement("userId", KeyType.HASH),      // GSI의 Partition Key
+                                            new KeySchemaElement("startTime", KeyType.RANGE)   // GSI의 Sort Key
+                                    )
+                                    .withProjection(new Projection().withProjectionType(ProjectionType.ALL)) // 전체 속성 포함
                     )
                     .withBillingMode(BillingMode.PAY_PER_REQUEST);
 

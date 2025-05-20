@@ -16,7 +16,6 @@ public class DriveDashboard {
     // Sort Key
     private String driveId;
 
-
     @DynamoDBTypeConverted(converter = TypeConverter.InstantConverter.class)
     private Instant startTime;
 
@@ -29,13 +28,17 @@ public class DriveDashboard {
 
     // getter
     @DynamoDBHashKey(attributeName = "userId")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "userId-startTime-index", attributeName = "userId")
     public String getUserId() {
         return userId;
     }
 
     @DynamoDBRangeKey(attributeName = "driveId")
-    public String getDriveId() {
-        return driveId;
-    }
+    public String getDriveId() { return driveId; }
 
+    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "userId-startTime-index", attributeName = "startTime")
+    @DynamoDBTypeConverted(converter = TypeConverter.InstantConverter.class)
+    public Instant getStartTime() {
+        return startTime;
+    }
 }
