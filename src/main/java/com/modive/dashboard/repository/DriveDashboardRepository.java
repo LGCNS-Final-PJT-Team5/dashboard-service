@@ -3,8 +3,10 @@ package com.modive.dashboard.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.QueryResultPage;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.modive.dashboard.dto.DriveListDto;
+import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
 import lombok.RequiredArgsConstructor;
@@ -31,22 +33,49 @@ public class DriveDashboardRepository{
         return dynamoDBMapper.load(DriveDashboard.class, userId, driveId);
     }
 
-    public List<DriveListDto> listByUserId(String userId) {
-        // 1. 키 객체 생성 (userId만 설정)
-        DriveDashboard keyObject = new DriveDashboard();
-        keyObject.setUserId(userId);
+    /// userId로 운전 목록 조회하는 함수
+    ///
+    /// 정렬 조건 : startTime 내림차순
+    ///
+    /// 조회 크기 : pageSize
+    ///
+    /// lastEvaluatedKey : userId, driveId, startTime 모두 있어야 함
+    public PaginatedListResponse<DriveListDto> listByUserId(String userId, int pageSize, Map<String, AttributeValue> lastEvaluatedKey) {
 
-        // 2. 쿼리 조건 설정
+        // １. 키 캑체
+        DriveDashboard hashKeyValues = new DriveDashboard();
+        hashKeyValues.setUserId(userId);
+
+        // ２. 쿼리
         DynamoDBQueryExpression<DriveDashboard> queryExpression = new DynamoDBQueryExpression<DriveDashboard>()
-                .withHashKeyValues(keyObject);
+                .withIndexName("userId-startTime-index")
+                .withHashKeyValues(hashKeyValues)
+                .withConsistentRead(false)
+                .withScanIndexForward(false)
+                .withLimit(pageSize);
 
-        // 3. 쿼리 실행
-        List<DriveDashboard> dashboards = dynamoDBMapper.query(DriveDashboard.class, queryExpression);
+        // 3. 커서 적용
+        if (lastEvaluatedKey != null) {
+            queryExpression.withExclusiveStartKey(lastEvaluatedKey);
+        }
 
-        // 4. 필요한 필드만 DriveListDto로 매핑
-        return dashboards.stream()
+        // 4. 쿼리 실행
+        QueryResultPage<DriveDashboard> resultPage = dynamoDBMapper.queryPage(DriveDashboard.class, queryExpression);
+
+        // 5. 필요한 필드만 DriveListDto로 매핑
+        List<DriveListDto> items = resultPage.getResults().stream()
                 .map(d -> new DriveListDto(d.getDriveId(), d.getStartTime(), d.getEndTime(), d.getScores().totalScore))
-                .collect(Collectors.toList());
+                .toList();
+
+        String driveId = null;
+        String startTime = null;
+
+        if (resultPage.getLastEvaluatedKey() != null) {
+            driveId = resultPage.getLastEvaluatedKey().get("driveId") != null ? resultPage.getLastEvaluatedKey().get("driveId").getS() : null;
+            startTime = resultPage.getLastEvaluatedKey().get("startTime") != null ? resultPage.getLastEvaluatedKey().get("startTime").getS() : null;
+        }
+
+        return new PaginatedListResponse<DriveListDto>(items, driveId, startTime);
     }
 
     public void deleteById(String driveId) {

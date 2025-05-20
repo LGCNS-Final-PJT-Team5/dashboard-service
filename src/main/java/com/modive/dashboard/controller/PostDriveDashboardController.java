@@ -1,6 +1,7 @@
 package com.modive.dashboard.controller;
 
 import com.modive.dashboard.dto.DriveDashboardResponse;
+import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.dto.detail.DriveDetailDto;
 import com.modive.dashboard.dto.DriveListDto;
 import com.modive.dashboard.enums.ScoreType;
@@ -66,10 +67,13 @@ public class PostDriveDashboardController {
     // 4. 주행 후 대시보드 목록 조회
     @GetMapping()
     public ResponseEntity<Object> getPostDriveDashboards(
-            @RequestHeader("X-User-Id") String userId // TODO: userId 연동
+            @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String driveId
     ) {
 
-        List<DriveListDto> dtos = postDriveDashboardService.getPostDriveDashboardList(userId);
+        PaginatedListResponse<DriveListDto> dtos = postDriveDashboardService.getPostDriveDashboardList(userId, startTime, driveId, pageSize);
         return ResponseEntity.ok(dtos);
     }
 

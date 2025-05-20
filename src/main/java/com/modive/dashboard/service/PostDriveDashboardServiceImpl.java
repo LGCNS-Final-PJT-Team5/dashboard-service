@@ -1,5 +1,6 @@
 package com.modive.dashboard.service;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
 import com.modive.dashboard.dto.detail.*;
@@ -13,8 +14,10 @@ import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class PostDriveDashboardServiceImpl implements PostDriveDashboardService {
@@ -196,17 +199,27 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
     // 4. 주행 후 대시보드 목록 조회
     @Override
-    public List<DriveListDto> getPostDriveDashboardList(String userId) {
+    public PaginatedListResponse<DriveListDto> getPostDriveDashboardList(String userId, String startTime, String driveId, int pageSize) {
 
-        List<DriveListDto> dtos = driveDashboardRepository.listByUserId(userId);
+        Map<String, AttributeValue> lastEvaluatedKey = null;
+        if (startTime != null && userId != null) {
+            lastEvaluatedKey = Map.of(
+                    "userId", new AttributeValue().withS(userId),
+                    "startTime", new AttributeValue().withS(startTime),
+                    "driveId", new AttributeValue().withS(driveId)
+            );
+        }
 
-        return dtos;
+        PaginatedListResponse<DriveListDto> response = driveDashboardRepository.listByUserId(userId, pageSize, lastEvaluatedKey);
+
+        return new PaginatedListResponse<DriveListDto>(response.getList(), response.getDriveId(), response.getStartTime());
     }
 
     // <editor-fold desc="# Get dummy data">
     private Drive getDummyDrive(String userId, String driveId) {
-        Instant startTime = Instant.parse("2025-04-25T08:00:00Z");
-        Instant endTime = Instant.parse("2025-04-25T10:00:00Z");
+        Instant startTime = Instant.now();
+        long randomMinutes = ThreadLocalRandom.current().nextLong(10, 61); // 10 ~ 60분
+        Instant endTime = startTime.plus(Duration.ofMinutes(randomMinutes));
 
         Random random = new Random();
 

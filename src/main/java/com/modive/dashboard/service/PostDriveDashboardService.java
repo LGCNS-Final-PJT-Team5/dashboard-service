@@ -1,6 +1,7 @@
 package com.modive.dashboard.service;
 
 import com.modive.dashboard.dto.DriveDashboardResponse;
+import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.dto.detail.DriveDetailDto;
 import com.modive.dashboard.dto.DriveListDto;
 import com.modive.dashboard.enums.ScoreType;
@@ -19,5 +20,5 @@ public interface PostDriveDashboardService {
     DriveDetailDto getPostDriveDashboardByType(String userId, String driveId, ScoreType type);
 
     // 4. 주행 후 대시보드 목록 조회
-    List<DriveListDto> getPostDriveDashboardList(String userId);
+    PaginatedListResponse<DriveListDto> getPostDriveDashboardList(String userId, String startTime, String driveId, int pageSize);
 }

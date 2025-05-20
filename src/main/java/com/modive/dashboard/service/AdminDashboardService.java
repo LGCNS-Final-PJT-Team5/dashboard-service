@@ -1,9 +1,12 @@
 package com.modive.dashboard.service;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.dto.admin.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdminDashboardService {
 
@@ -17,6 +20,6 @@ public interface AdminDashboardService {
     List<DriveCountByUser> getDriveCountByUser(UserIdListRequest userIds);
 
     // 4. 특정 사용자 운전 내역 (사용자 상세 조회)
-    List<DriveHistory> getDrivesByUser(String userId, int page, int pageSize);
+    PaginatedListResponse<DriveHistory> getDrivesByUser(String userId, String startTime, String driveId, int pageSize);
 
 }

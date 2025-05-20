@@ -1,5 +1,6 @@
 package com.modive.dashboard.service;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.modive.dashboard.client.LLMClient;
 import com.modive.dashboard.dto.*;
 import com.modive.dashboard.dto.admin.*;
@@ -22,6 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminDashboardServiceImpl implements AdminDashboardService {
@@ -108,16 +110,24 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
     // 4. 특정 사용자 운전 내역 (사용자 상세 조회)
     @Override
-    public List<DriveHistory> getDrivesByUser(String userId, int page, int pageSize) {
+    public PaginatedListResponse<DriveHistory> getDrivesByUser(String userId, String startTime, String driveId, int pageSize) {
 
-        List<DriveHistory> list = new ArrayList<>();
-        List<DriveListDto> dtos = driveDashboardRepository.listByUserId(userId);
-
-        for (DriveListDto dto : dtos) {
-            list.add(dto.toDriveHistory());
+        Map<String, AttributeValue> lastEvaluatedKey = null;
+        if (startTime != null && userId != null) {
+            lastEvaluatedKey = Map.of(
+                    "userId", new AttributeValue().withS(userId),
+                    "startTime", new AttributeValue().withS(startTime),
+                    "driveId", new AttributeValue().withS(driveId)
+            );
         }
 
-        return list;
+        PaginatedListResponse<DriveListDto> response = driveDashboardRepository.listByUserId(userId, pageSize, lastEvaluatedKey);
+
+        List<DriveHistory> list = response.getList().stream()
+                .map(DriveListDto::toDriveHistory)
+                .collect(Collectors.toList());
+
+        return new PaginatedListResponse<>(list, response.getDriveId(), response.getStartTime());
     }
 
 }
