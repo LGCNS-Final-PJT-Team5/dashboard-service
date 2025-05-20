@@ -29,6 +29,8 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
     private StatisticsRepository statisticsRepository;
     @Autowired
     private TotalDashboardRepository totalDashboardRepository;
+    @Autowired
+    private DriveDashboardRepository driveDashboardRepository;
 
     // 1. 총 주행 수
     @Override
@@ -99,6 +101,20 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
                     userId,
                     count
             ));
+        }
+
+        return list;
+    }
+
+    // 4. 특정 사용자 운전 내역 (사용자 상세 조회)
+    @Override
+    public List<DriveHistory> getDrivesByUser(String userId, int page, int pageSize) {
+
+        List<DriveHistory> list = new ArrayList<>();
+        List<DriveListDto> dtos = driveDashboardRepository.listByUserId(userId);
+
+        for (DriveListDto dto : dtos) {
+            list.add(dto.toDriveHistory());
         }
 
         return list;

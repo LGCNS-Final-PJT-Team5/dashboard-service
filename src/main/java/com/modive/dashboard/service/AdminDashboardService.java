@@ -16,7 +16,7 @@ public interface AdminDashboardService {
     // 3. 사용자별 운전 횟수 (사용자 정보)
     List<DriveCountByUser> getDriveCountByUser(UserIdListRequest userIds);
 
-//    // 4. 특정 사용자 운전 내역 (사용자 상세 조회)
-//    ResponseEntity<AdminResponse> getDrivesByUser();
+    // 4. 특정 사용자 운전 내역 (사용자 상세 조회)
+    List<DriveHistory> getDrivesByUser(String userId, int page, int pageSize);
 
 }
