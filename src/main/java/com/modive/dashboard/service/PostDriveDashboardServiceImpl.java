@@ -231,27 +231,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         drive.setActiveDriveDurationSec(6900);
 
         // SuddenAccelerations
-        List<Drive.TimeWithFlag> accelerationFlags = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            Instant s = startTime.plusSeconds(i * 600);
-            Drive.TimeWithFlag p = new Drive.TimeWithFlag();
-            p.setTime(s);
-            p.setFlag(i % 2 == 0);
-            accelerationFlags.add(p);
-        }
-        drive.setSuddenAccelerations(accelerationFlags);
-
+        drive.setSuddenAccelerations(generateRandomInstants(startTime, endTime, 5));
 
         // SharpTurns
-        List<Drive.TimeWithFlag> shparTurnFlags = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            Instant s = startTime.plusSeconds(i * 600);
-            Drive.TimeWithFlag p = new Drive.TimeWithFlag();
-            p.setTime(s);
-            p.setFlag(i % 2 == 1);
-            shparTurnFlags.add(p);
-        }
-        drive.setSharpTurns(shparTurnFlags);
+        drive.setSharpTurns(generateRandomInstants(startTime, endTime, 8));
 
         // SpeedLogs
         List<Drive.SpeedLog> speedLogs = new ArrayList<>();

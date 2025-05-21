@@ -68,30 +68,12 @@ public class ScoreCalculator {
 
     // 안전운전 점수: 급가속/급감속
     private double calcAccelerationScore(Drive drive) {
-            List<Drive.TimeWithFlag> accelerations = drive.getSuddenAccelerations();
-
-            long b = accelerations.size();
-            if (b == 0) return 100;
-
-            long a = accelerations.stream()
-                    .filter(t -> t.isFlag())
-                    .count();
-
-            return 100.0 * a / b;
+            return  Math.max(0, 100 - (10 * drive.getSuddenAccelerations().size()));
         }
 
     // 안전운전 점수: 급회전
     private double calcSharpTurnScore(Drive drive) {
-        List<Drive.TimeWithFlag> sharpTurns = drive.getSharpTurns();
-
-        long b = sharpTurns.size();
-        if (b == 0) return 100;
-
-        long a = sharpTurns.stream()
-                .filter(t -> t.isFlag())
-                .count();
-
-        return 100.0 * a / b;
+        return Math.max(0, 100 - (10 * drive.getSharpTurns().size()));
     }
 
     // 안전운전 점수: 과속 (횟수당 감점)

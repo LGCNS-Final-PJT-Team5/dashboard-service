@@ -26,9 +26,11 @@ public class Drive {
 
     private int activeDriveDurationSec;
 
-    private List<TimeWithFlag> suddenAccelerations;
+    @DynamoDBTypeConverted(converter = TypeConverter.InstantListConverter.class)
+    private List<Instant> suddenAccelerations;
 
-    private List<TimeWithFlag> sharpTurns;
+    @DynamoDBTypeConverted(converter = TypeConverter.InstantListConverter.class)
+    private List<Instant> sharpTurns;
 
     private List<SpeedLog> speedLogs;
 

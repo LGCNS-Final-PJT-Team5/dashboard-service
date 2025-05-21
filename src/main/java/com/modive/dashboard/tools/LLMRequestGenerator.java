@@ -15,20 +15,12 @@ public class LLMRequestGenerator {
         //<editor-fold desc="# Calculate details">
         // 급가속/급감속 수
         request.setRapidAccelerationDecelerationCount(
-                drive.getSuddenAccelerations() != null
-                        ? (int) drive.getSuddenAccelerations().stream()
-                        .filter(Drive.TimeWithFlag::isFlag)
-                        .count()
-                        : 0
+                drive.getSuddenAccelerations() != null ? drive.getSuddenAccelerations().size() : 0
         );
 
         // 급회전 수
         request.setSharpTurnCount(
-                drive.getSharpTurns() != null
-                        ? (int) drive.getSharpTurns().stream()
-                        .filter(Drive.TimeWithFlag::isFlag)
-                        .count()
-                        : 0
+                drive.getSharpTurns() != null ? drive.getSharpTurns().size() : 0
         );
 
         // 과속 수
