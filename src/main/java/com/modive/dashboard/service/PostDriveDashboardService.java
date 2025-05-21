@@ -4,6 +4,7 @@ import com.modive.dashboard.dto.DriveDashboardResponse;
 import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.dto.detail.DriveDetailDto;
 import com.modive.dashboard.dto.DriveListDto;
+import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.enums.ScoreType;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface PostDriveDashboardService {
 
     // 1. 주행 후 대시보드 생성
-    void createPostDriveDashboard(String userId, String driveId);
+    void createPostDriveDashboard(String userId, String driveId, Drive drive);
 
     // 2. 주행 후 대시보드 조회
     DriveDashboardResponse getPostDriveDashboard(String userId, String driveId);

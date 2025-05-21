@@ -4,6 +4,7 @@ import com.modive.dashboard.dto.DriveDashboardResponse;
 import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.dto.detail.DriveDetailDto;
 import com.modive.dashboard.dto.DriveListDto;
+import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.service.PostDriveDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,12 @@ public class PostDriveDashboardController {
     @PostMapping("/{driveId}")
     public ResponseEntity<Void> createPostDriveDashboard(
             @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
-            @PathVariable String driveId
+            @PathVariable String driveId,
+            @RequestBody Drive drive
     ) {
 
         // TODO: 예외 처리하기
-        postDriveDashboardService.createPostDriveDashboard(userId, driveId);
+        postDriveDashboardService.createPostDriveDashboard(userId, driveId, drive);
 
         return ResponseEntity.noContent().build();
     }

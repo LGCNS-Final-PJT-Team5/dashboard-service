@@ -36,19 +36,19 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
     // 1. 주행 후 대시보드 생성
     @Override
-    public void createPostDriveDashboard(String userId, String driveId) {
+    public void createPostDriveDashboard(String userId, String driveId, Drive drive) {
 
-        // 1-1. 데이터 가져와서 분석 후 저장
-        Drive drive = getDummyDrive(userId, driveId); // TODO: driveId로 주행 데이터 가져오기 및 데이터 분석
-        driveRepository.save(drive);
+        // 1-1. 데이터 가져와서 저장
+        Drive dummyDrive = getDummyDrive(userId, driveId); // TODO: analysis service에서 받기
+        driveRepository.save(dummyDrive);
 
         // 1-2. 점수 산정
-        ScoreDto score = scoreCalculator.calculateDriveScore(drive);
+        ScoreDto score = scoreCalculator.calculateDriveScore(dummyDrive);
 
         // 1-3. 피드백 받아오기
         DriveFeedbacksDto feedbacks = new DriveFeedbacksDto();
         // TODO: LLM 서비스에서 피드백 받아오기
-        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(drive);
+        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(dummyDrive);
         System.out.println(params); //임시
 //        DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(params);
 
@@ -57,15 +57,15 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
         dashboard.setUserId(userId);
         dashboard.setDriveId(driveId);
-        dashboard.setStartTime(drive.getStartTime());
-        dashboard.setEndTime(drive.getEndTime());
+        dashboard.setStartTime(dummyDrive.getStartTime());
+        dashboard.setEndTime(dummyDrive.getEndTime());
         dashboard.setScores(score);
         dashboard.setFeedbacks(feedbacks);
 
         driveDashboardRepository.save(dashboard);
         // 비동기 처리하자.
         totalDashboardService.updateTotalDashboard(userId, dashboard);
-        totalDashboardService.updateStatistics(drive, score);
+        totalDashboardService.updateStatistics(dummyDrive, score);
     }
 
     // 2. 주행 후 대시보드 조회
