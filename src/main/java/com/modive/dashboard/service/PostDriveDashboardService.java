@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostDriveDashboardService {
 
     // 1. 주행 후 대시보드 생성
-    void createPostDriveDashboard(String userId, String driveId, Drive drive);
+    void createPostDriveDashboard(String userId, String driveId);
 
     // 2. 주행 후 대시보드 조회
     DriveDashboardResponse getPostDriveDashboard(String userId, String driveId);

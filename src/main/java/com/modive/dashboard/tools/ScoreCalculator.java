@@ -95,8 +95,13 @@ public class ScoreCalculator {
 
     // 사고 예방 점수: 반응속도
     private double calcReactionTimeScore(Drive drive) {
+        List<Drive.StartEndTime> reactionTimes = drive.getReactionTimes();
+        if (reactionTimes == null || reactionTimes.isEmpty()) {
+            return 100.0;
+        }
+
         double x = 0, y = 0;
-        for (Drive.StartEndTime rt : drive.getReactionTimes()) {
+        for (Drive.StartEndTime rt : reactionTimes) {
             double delta = Duration.between(rt.getStartTime(), rt.getEndTime()).toMillis() / 1000.0;
             if (delta < 0.9) x++;
             else y++;
@@ -111,7 +116,12 @@ public class ScoreCalculator {
 
     // 사고 예방 점수: 안전거리 미유지 (초당 3점 감점)
     private double calcFollowingDistanceScore(Drive drive) {
-        long totalSeconds = drive.getFollowingDistanceEvents().stream()
+        List<Drive.StartEndTime> events = drive.getFollowingDistanceEvents();
+        if (events == null || events.isEmpty()) {
+            return 100.0;
+        }
+
+        long totalSeconds = events.stream()
                 .mapToLong(event -> {
                     if (event.getStartTime() != null && event.getEndTime() != null) {
                         return Duration.between(event.getStartTime(), event.getEndTime()).getSeconds();

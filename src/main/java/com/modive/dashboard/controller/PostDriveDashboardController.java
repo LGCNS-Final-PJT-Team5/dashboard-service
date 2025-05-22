@@ -21,15 +21,14 @@ public class PostDriveDashboardController {
     private PostDriveDashboardService postDriveDashboardService;
 
     // 1. 주행 후 대시보드 생성 및 누적 대시보드 업데이트 (주행 완료 처리)
-    @PostMapping("/{driveId}")
+    @PostMapping
     public ResponseEntity<Void> createPostDriveDashboard(
-            @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
-            @PathVariable String driveId,
-            @RequestBody Drive drive
+            @RequestParam String userId,
+            @RequestParam String driveId
     ) {
 
         // TODO: 예외 처리하기
-        postDriveDashboardService.createPostDriveDashboard(userId, driveId, drive);
+        postDriveDashboardService.createPostDriveDashboard(userId, driveId);
 
         return ResponseEntity.noContent().build();
     }
