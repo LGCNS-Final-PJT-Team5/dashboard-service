@@ -10,6 +10,7 @@ import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.repository.DriveDashboardRepository;
 import com.modive.dashboard.repository.DriveRepository;
 import com.modive.dashboard.tools.LLMRequestGenerator;
+import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
         // 1-1. 데이터 가져오기
         Drive data = driveRepository.findById(userId, driveId);
-//        Drive dummyDrive = getDummyDrive(userId, driveId); // TODO: analysis service에서 받기
-//        driveRepository.save(dummyDrive);
+
+        if (data == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+        }
 
         // 1-2. 점수 산정
         ScoreDto score = scoreCalculator.calculateDriveScore(data);
@@ -73,6 +76,11 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     public DriveDashboardResponse getPostDriveDashboard(String userId, String driveId) {
 
         DriveDashboard dashboard = driveDashboardRepository.findById(userId, driveId);
+
+        if (dashboard == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 대시보드가 없습니다.");
+        }
+
         DriveDashboardResponse dashboardResponse = new DriveDashboardResponse(dashboard);
         return dashboardResponse;
     }
@@ -95,6 +103,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         EcoDetailDto dto = new EcoDetailDto();
         DriveDashboard dashboard = driveDashboardRepository.findById(userId, driveId);
         Drive drive = driveRepository.findById(userId, driveId);
+
+        if (dashboard == null || drive == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+        }
 
         SubScoreDto idling = new SubScoreDto();
         SubScoreDto speedMaintain = new SubScoreDto();
@@ -119,6 +131,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         SafeDetailDto dto = new SafeDetailDto();
         DriveDashboard dashboard = driveDashboardRepository.findById(userId, driveId);
         Drive drive = driveRepository.findById(userId, driveId);
+
+        if (dashboard == null || drive == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+        }
 
         SubScoreDto acceleration = new SubScoreDto();
         SubScoreDto sharpTurn = new SubScoreDto();
@@ -148,6 +164,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         DriveDashboard dashboard = driveDashboardRepository.findById(userId, driveId);
         Drive drive = driveRepository.findById(userId, driveId);
 
+        if (dashboard == null || drive == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+        }
+
         SubScoreDto drivingTime = new SubScoreDto();
         SubScoreDto inactivity = new SubScoreDto();
 
@@ -171,6 +191,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         PreventDetailDto dto = new PreventDetailDto();
         DriveDashboard dashboard = driveDashboardRepository.findById(userId, driveId);
         Drive drive = driveRepository.findById(userId, driveId);
+
+        if (dashboard == null || drive == null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+        }
 
         SubScoreDto reaction = new SubScoreDto();
         SubScoreDto laneDeparture = new SubScoreDto();

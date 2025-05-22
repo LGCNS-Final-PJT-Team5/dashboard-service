@@ -10,6 +10,7 @@ import com.modive.dashboard.entity.TotalDashboard;
 import com.modive.dashboard.enums.UserType;
 import com.modive.dashboard.repository.StatisticsRepository;
 import com.modive.dashboard.repository.TotalDashboardRepository;
+import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,11 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     public TotalDashboardResponse getTotalDashboard(String userId) {
 
         TotalDashboard dashboard = totalDashboardRepository.findById(userId);
+
+        if (dashboard == null) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 누적 대시보드가 없습니다.");
+        }
+
         TotalDashboardResponse result = new TotalDashboardResponse(dashboard);
 
         return result;

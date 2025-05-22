@@ -7,6 +7,7 @@ import com.modive.dashboard.dto.DriveListDto;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.service.PostDriveDashboardService;
+import com.modive.dashboard.tools.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,6 @@ public class PostDriveDashboardController {
             @RequestParam String driveId
     ) {
 
-        // TODO: 예외 처리하기
         postDriveDashboardService.createPostDriveDashboard(userId, driveId);
 
         return ResponseEntity.noContent().build();
@@ -56,8 +56,7 @@ public class PostDriveDashboardController {
         try {
             type = ScoreType.fromString(scoreType);
         } catch (IllegalArgumentException e) {
-            // TODO: 오류 처리
-            return ResponseEntity.badRequest().body("Invalid scoreType: " + scoreType);
+            throw new NotFoundException("[" + scoreType + "]에 해당하는 타입이 없습니다.");
         }
 
         DriveDetailDto detail = postDriveDashboardService.getPostDriveDashboardByType(userId, driveId, type);

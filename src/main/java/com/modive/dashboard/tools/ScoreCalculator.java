@@ -48,7 +48,11 @@ public class ScoreCalculator {
     // 탄소 배출 점수: 공회전
     private double calcIdlingScore(Drive drive) {
         int score = 100;
+        if (drive.getIdlingPeriods() == null || drive.getIdlingPeriods().isEmpty()) {
+            return score;
+        }
         for (Drive.StartEndTime period : drive.getIdlingPeriods()) {
+            if (period == null || period.getStartTime() == null || period.getEndTime() == null) continue;
             long seconds = Duration.between(period.getStartTime(), period.getEndTime()).getSeconds();
             if (seconds >= 120) {
                 score -= (int) ((seconds - 120) / 30) * 5;
@@ -59,8 +63,11 @@ public class ScoreCalculator {
 
     // 탄소 배출 점수: 정속주행
     private double calcSpeedMaintainScore(Drive drive) {
+        if (drive.getSpeedRate() == null || drive.getSpeedRate().isEmpty()) {
+            return 100;
+        }
         return drive.getSpeedRate().stream()
-                .filter(sr -> "middle".equals(sr.getTag()))
+                .filter(sr -> sr != null && "middle".equals(sr.getTag()))
                 .map(sr -> sr.getRatio())
                 .findFirst()
                 .orElse(100);
@@ -68,18 +75,28 @@ public class ScoreCalculator {
 
     // 안전운전 점수: 급가속/급감속
     private double calcAccelerationScore(Drive drive) {
-            return  Math.max(0, 100 - (10 * drive.getSuddenAccelerations().size()));
+        if (drive.getSuddenAccelerations() == null) {
+            return 100;
         }
+        return Math.max(0, 100 - (10 * drive.getSuddenAccelerations().size()));
+    }
 
     // 안전운전 점수: 급회전
     private double calcSharpTurnScore(Drive drive) {
+        if (drive.getSharpTurns() == null) {
+            return 100;
+        }
         return Math.max(0, 100 - (10 * drive.getSharpTurns().size()));
     }
 
     // 안전운전 점수: 과속 (횟수당 감점)
     private double calcOverSpeedScore(Drive drive) {
         int score = 100;
+        if (drive.getSpeedLogs() == null || drive.getSpeedLogs().isEmpty()) {
+            return score;
+        }
         for (Drive.SpeedLog log : drive.getSpeedLogs()) {
+            if (log == null) continue;
             if (log.getMaxSpeed() >= 100) {
                 score -= 10;
             }
@@ -102,6 +119,7 @@ public class ScoreCalculator {
 
         double x = 0, y = 0;
         for (Drive.StartEndTime rt : reactionTimes) {
+            if (rt == null || rt.getStartTime() == null || rt.getEndTime() == null) continue;
             double delta = Duration.between(rt.getStartTime(), rt.getEndTime()).toMillis() / 1000.0;
             if (delta < 0.9) x++;
             else y++;
@@ -111,6 +129,9 @@ public class ScoreCalculator {
 
     // 사고 예방 점수: 차선이탈
     private double calcLaneDepartureScore(Drive drive) {
+        if (drive.getLaneDepartures() == null) {
+            return 100;
+        }
         return Math.max(0, 100 - (10 * drive.getLaneDepartures().size()));
     }
 
@@ -122,13 +143,8 @@ public class ScoreCalculator {
         }
 
         long totalSeconds = events.stream()
-                .mapToLong(event -> {
-                    if (event.getStartTime() != null && event.getEndTime() != null) {
-                        return Duration.between(event.getStartTime(), event.getEndTime()).getSeconds();
-                    } else {
-                        return 0;
-                    }
-                })
+                .filter(event -> event != null && event.getStartTime() != null && event.getEndTime() != null)
+                .mapToLong(event -> Duration.between(event.getStartTime(), event.getEndTime()).getSeconds())
                 .sum();
 
         return Math.max(0, 100 - (3 * totalSeconds));
@@ -136,6 +152,9 @@ public class ScoreCalculator {
 
     // 주의력 점수: 운전 시간
     private double calcDrivingTimeScore(Drive drive) {
+        if (drive.getStartTime() == null || drive.getEndTime() == null) {
+            return 100;
+        }
         long driveMinutes = Duration.between(drive.getStartTime(), drive.getEndTime()).toMinutes();
         if (driveMinutes <= 120) return 100;
         return Math.max(0, 100 - ((driveMinutes - 120) / 10) * 5);
@@ -143,9 +162,13 @@ public class ScoreCalculator {
 
     // 주의력 점수: 미조작 시간 (횟수당 10점 감점)
     private double calcInactivityScore(Drive drive) {
+        if (drive.getInactiveMoments() == null) {
+            return 100;
+        }
         int count = drive.getInactiveMoments().size();
         return Math.max(0, 100 - (count * 10));
     }
+
     // </editor-fold>
 
     public ScoreDto calculateTotalScore(ScoreDto totalScore, ScoreDto driveScore, int totalDriveCount) {
