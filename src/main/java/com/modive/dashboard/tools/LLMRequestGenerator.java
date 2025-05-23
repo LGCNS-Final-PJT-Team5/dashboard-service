@@ -1,10 +1,13 @@
 package com.modive.dashboard.tools;
 
 import com.modive.dashboard.dto.DriveFeedbackRequest;
+import com.modive.dashboard.dto.SingleDriveFeedbackRequest;
 import com.modive.dashboard.entity.Drive;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class LLMRequestGenerator {
@@ -95,6 +98,29 @@ public class LLMRequestGenerator {
         //</editor-fold>
 
         return request;
+    }
+
+    public SingleDriveFeedbackRequest convertToSingleDriveFeedbackRequest(DriveFeedbackRequest feedback) {
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("rapidAccelerationDecelerationCount", feedback.getRapidAccelerationDecelerationCount());
+        params.put("sharpTurnCount", feedback.getSharpTurnCount());
+        params.put("overspeedCount", feedback.getOverspeedCount());
+        params.put("idlingTimeMinutes", feedback.getIdlingTimeMinutes());
+
+        params.put("steadySpeedLowRatio", feedback.getSteadySpeedLowRatio());
+        params.put("steadySpeedMiddleRatio", feedback.getSteadySpeedMiddleRatio());
+        params.put("steadySpeedHighRatio", feedback.getSteadySpeedHighRatio());
+
+        params.put("averageReactionTimeMilliSeconds", feedback.getAverageReactionTimeMilliSeconds());
+
+        params.put("laneDepartureCount", feedback.getLaneDepartureCount());
+        params.put("safeDistanceNotMaintainSeconds", feedback.getSafeDistanceNotMaintainSeconds());
+
+        params.put("totalDrivingMinutes", feedback.getTotalDrivingMinutes());
+        params.put("inactivityCount", feedback.getInactivityCount());
+
+        return new SingleDriveFeedbackRequest(params);
     }
 
 }

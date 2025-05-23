@@ -56,10 +56,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         ScoreDto score = scoreCalculator.calculateDriveScore(data);
 
         // 1-3. 피드백 받아오기 // TODO: LLM 서비스에서 피드백 받아오기
-        DriveFeedbacksDto feedbacks = new DriveFeedbacksDto();
         DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
+        SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
         System.out.println(params); //임시
-//        DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(params);
+        DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(request);
 
         // 1-4. 저장
         DriveDashboard dashboard = new DriveDashboard();
@@ -121,8 +121,8 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         idling.score = dashboard.getScores().idlingScore;
         speedMaintain.score = dashboard.getScores().speedMaintainScore;
 
-        idling.feedback = dashboard.getFeedbacks().idlingFeedback;
-        speedMaintain.feedback = dashboard.getFeedbacks().speedMaintainFeedback;
+        idling.feedback = dashboard.getFeedbacks().idlingTimeMinutesFeedback;
+        speedMaintain.feedback = dashboard.getFeedbacks().steadySpeedRatioFeedback;
 
         idling.graph = drive.getIdlingPeriods();
         speedMaintain.graph = drive.getSpeedRate();
@@ -150,9 +150,9 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         sharpTurn.score = dashboard.getScores().sharpTurnScore;
         overSpeed.score = dashboard.getScores().overSpeedScore;
 
-        acceleration.feedback = dashboard.getFeedbacks().accelerationFeedback;
-        sharpTurn.feedback = dashboard.getFeedbacks().sharpTurnFeedback;
-        overSpeed.feedback = dashboard.getFeedbacks().overSpeedFeedback;
+        acceleration.feedback = dashboard.getFeedbacks().rapidAccelerationDecelerationCountFeedback;
+        sharpTurn.feedback = dashboard.getFeedbacks().sharpTurnCountFeedback;
+        overSpeed.feedback = dashboard.getFeedbacks().overspeedCountFeedback;
 
         acceleration.graph = drive.getSuddenAccelerations();
         sharpTurn.graph = drive.getSharpTurns();
@@ -180,8 +180,8 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         drivingTime.score = dashboard.getScores().drivingTimeScore;
         inactivity.score = dashboard.getScores().inactivityScore;
 
-        drivingTime.feedback = dashboard.getFeedbacks().drivingTimeFeedback;
-        inactivity.feedback = dashboard.getFeedbacks().inactivityFeedback;
+        drivingTime.feedback = dashboard.getFeedbacks().totalDrivingMinutesFeedback;
+        inactivity.feedback = dashboard.getFeedbacks().inactivityTimeMinutesFeedback;
 
         drivingTime.graph = List.of(
                 Map.of("startTime", drive.getStartTime(), "endTime", drive.getEndTime()));
@@ -210,9 +210,9 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         laneDeparture.score = dashboard.getScores().laneDepartureScore;
         followingDistance.score = dashboard.getScores().followingDistanceScore;
 
-        reaction.feedback = dashboard.getFeedbacks().reactionFeedback;
-        laneDeparture.feedback = dashboard.getFeedbacks().laneDepartureFeedback;
-        followingDistance.feedback = dashboard.getFeedbacks().followingDistanceFeedback;
+        reaction.feedback = dashboard.getFeedbacks().averageReactionTimeSecondsFeedback;
+        laneDeparture.feedback = dashboard.getFeedbacks().laneDepartureCountFeedback;
+        followingDistance.feedback = dashboard.getFeedbacks().safeDistanceMaintainMinutesFeedback;
 
         reaction.graph = drive.getReactionTimes();
         laneDeparture.graph = drive.getLaneDepartures();
