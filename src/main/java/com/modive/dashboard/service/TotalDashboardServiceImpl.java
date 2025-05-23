@@ -89,7 +89,7 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
                 .toList();
 
         report.setUserId(userId);
-        report.setUserType(UserType.FUEL_EFFICIENCY); // TODO: 유저 타입 받아오기
+        report.setUserType(UserType.ECO); // TODO: 유저 타입 받아오기
         report.setDriveCount(dashboards.size());
         report.setScores(scoreCalculator.calculateAverageScore(scores));
 

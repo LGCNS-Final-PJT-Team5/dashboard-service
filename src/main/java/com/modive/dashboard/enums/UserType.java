@@ -2,26 +2,26 @@ package com.modive.dashboard.enums;
 
 public enum UserType {
     // 1. 연비
-    FUEL_EFFICIENCY,
+    ECO,
 
     // 2. 보험료
-    INSURANCE_COST,
+    INSURANCE,
 
     // 3. 초보운전
-    BEGINNER_DRIVER,
+    BEGINNER,
 
     // 4. 앱테크
-    APP_TECH,
+    REWARD,
 
     // 5. 차량 관리
-    VEHICLE_MAINTENANCE,
+    MAINTENANCE,
 
     // 6. 탄소 절감
-    CARBON_REDUCTION,
+    CARBON,
 
     // 7. 드라이브 스타
-    DRIVE_STAR,
+    DRIVESTAR,
 
     // 8. 드라이빙 테크닉
-    DRIVING_TECHNIQUE
+    TECHNIQUE
 }
