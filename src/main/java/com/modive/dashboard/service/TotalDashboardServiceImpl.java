@@ -105,6 +105,10 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     public void updateTotalDashboard(String userId, DriveDashboard driveDashboard) {
         TotalDashboard totalDashboard = totalDashboardRepository.findById(userId);
 
+        if (totalDashboard == null) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 누적 대시보드가 없습니다.");
+        }
+
         totalDashboard.setUpdatedAt(driveDashboard.getEndTime());
         totalDashboard.setTotalDriveCount(totalDashboard.getTotalDriveCount() + 1);
         totalDashboard.setScores(scoreCalculator.calculateTotalScore(totalDashboard.getScores(), driveDashboard.getScores(), totalDashboard.getTotalDriveCount()));
