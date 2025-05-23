@@ -39,6 +39,12 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     @Override
     public void createPostDriveDashboard(String userId, String driveId) {
 
+        DriveDashboard existing = driveDashboardRepository.findById(userId, driveId);
+
+        if (existing != null) {
+            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 대시보드가 이미 생성되었습니다.");
+        }
+
         // 1-1. 데이터 가져오기
         Drive data = driveRepository.findById(userId, driveId);
 

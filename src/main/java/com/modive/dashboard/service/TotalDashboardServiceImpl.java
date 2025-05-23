@@ -40,6 +40,12 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     // 1. 누적 대시보드 생성
     @Override
     public void createTotalDashboard(String userId) {
+        TotalDashboard existing = totalDashboardRepository.findById(userId);
+
+        if (existing != null) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 누적 대시보드가 이미 있습니다.");
+        }
+
         TotalDashboard dashboard = new TotalDashboard();
 
         dashboard.setUserId(userId);
@@ -73,6 +79,11 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
         ReportDto report = new ReportDto();
 
         List<DriveDashboard> dashboards = driveDashboardRepository.findByStartTimeAfter(userId, Instant.now().minus(7, ChronoUnit.DAYS));
+
+        if (dashboards.isEmpty()) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 최근 일주일 주행 기록이 없습니다.");
+        }
+
         List<ScoreDto> scores = dashboards.stream()
                 .map(DriveDashboard::getScores)
                 .toList();
