@@ -199,4 +199,60 @@ public class ScoreCalculator {
         return totalScore;
     }
 
+
+    public ScoreDto calculateAverageScore(List<ScoreDto> scores) {
+        if (scores == null || scores.isEmpty()) {
+            return new ScoreDto(); // 모든 값이 0.0인 기본 객체 반환
+        }
+
+        ScoreDto avg = new ScoreDto();
+        int count = scores.size();
+
+        for (ScoreDto s : scores) {
+            avg.idlingScore += s.idlingScore;
+            avg.speedMaintainScore += s.speedMaintainScore;
+            avg.ecoScore += s.ecoScore;
+
+            avg.accelerationScore += s.accelerationScore;
+            avg.sharpTurnScore += s.sharpTurnScore;
+            avg.overSpeedScore += s.overSpeedScore;
+            avg.safetyScore += s.safetyScore;
+
+            avg.reactionScore += s.reactionScore;
+            avg.laneDepartureScore += s.laneDepartureScore;
+            avg.followingDistanceScore += s.followingDistanceScore;
+            avg.accidentPreventionScore += s.accidentPreventionScore;
+
+            avg.drivingTimeScore += s.drivingTimeScore;
+            avg.inactivityScore += s.inactivityScore;
+            avg.attentionScore += s.attentionScore;
+
+            avg.totalScore += s.totalScore;
+        }
+
+        // 평균 계산
+        avg.idlingScore /= count;
+        avg.speedMaintainScore /= count;
+        avg.ecoScore /= count;
+
+        avg.accelerationScore /= count;
+        avg.sharpTurnScore /= count;
+        avg.overSpeedScore /= count;
+        avg.safetyScore /= count;
+
+        avg.reactionScore /= count;
+        avg.laneDepartureScore /= count;
+        avg.followingDistanceScore /= count;
+        avg.accidentPreventionScore /= count;
+
+        avg.drivingTimeScore /= count;
+        avg.inactivityScore /= count;
+        avg.attentionScore /= count;
+
+        avg.totalScore /= count;
+
+        return avg;
+    }
+
+
 }

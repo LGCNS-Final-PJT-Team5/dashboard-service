@@ -9,10 +9,12 @@ import com.modive.dashboard.dto.DriveListDto;
 import com.modive.dashboard.dto.PaginatedListResponse;
 import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.entity.DriveDashboard;
+import com.modive.dashboard.tools.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,12 +91,13 @@ public class DriveDashboardRepository{
     }
 
     // 특정 기간 이후 시작된 Drive 조회
-    public List<DriveDashboard> findByStartTimeAfter(String isoStartTime) {
+    public List<DriveDashboard> findByStartTimeAfter(String userId, Instant startTime) {
         Map<String, AttributeValue> eav = new HashMap<>();
-        eav.put(":startTime", new AttributeValue().withS(isoStartTime));
+        eav.put(":startTime", new AttributeValue().withS(startTime.toString()));
+        eav.put(":userId", new AttributeValue().withS(userId));
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("startTime > :startTime")
+                .withFilterExpression("startTime > :startTime and userId = :userId")
                 .withExpressionAttributeValues(eav);
 
         return dynamoDBMapper.scan(DriveDashboard.class, scanExpression);

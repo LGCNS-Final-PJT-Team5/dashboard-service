@@ -1,5 +1,6 @@
 package com.modive.dashboard.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.ScoreDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
@@ -8,6 +9,7 @@ import com.modive.dashboard.entity.DriveDashboard;
 import com.modive.dashboard.entity.Statistics;
 import com.modive.dashboard.entity.TotalDashboard;
 import com.modive.dashboard.enums.UserType;
+import com.modive.dashboard.repository.DriveDashboardRepository;
 import com.modive.dashboard.repository.StatisticsRepository;
 import com.modive.dashboard.repository.TotalDashboardRepository;
 import com.modive.dashboard.tools.NotFoundException;
@@ -19,7 +21,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TotalDashboardServiceImpl implements TotalDashboardService {
@@ -29,6 +34,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     private ScoreCalculator scoreCalculator;
     @Autowired
     private StatisticsRepository statisticsRepository;
+    @Autowired
+    private DriveDashboardRepository driveDashboardRepository;
 
     // 1. 누적 대시보드 생성
     @Override
@@ -63,9 +70,22 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     @Override
     public ReportDto makeReport(String userId) {
 
+        ReportDto report = new ReportDto();
 
+        List<DriveDashboard> dashboards = driveDashboardRepository.findByStartTimeAfter(userId, Instant.now().minus(7, ChronoUnit.DAYS));
+        List<ScoreDto> scores = dashboards.stream()
+                .map(DriveDashboard::getScores)
+                .toList();
 
-        return null;
+        report.setUserId(userId);
+        report.setUserType(UserType.FUEL_EFFICIENCY); // TODO: 유저 타입 받아오기
+        report.setDriveCount(dashboards.size());
+        report.setScores(scoreCalculator.calculateAverageScore(scores));
+
+        report.setTotalFeedback("total feedback입니다.");
+        report.setDetailedFeedback("detail feedback입니다.");
+
+        return report;
     }
 
     //<editor-folder desc="# Async methods">
