@@ -79,7 +79,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         // 비동기 처리하자.
         List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
         totalDashboardService.updateStatistics(data, score);
-        EarnReward(dashboard, scoreList);
+        if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 10) EarnReward(dashboard, scoreList);
     }
 
     // 1-5. 씨앗 적립 요청
