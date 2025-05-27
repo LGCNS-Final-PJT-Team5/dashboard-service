@@ -27,4 +27,13 @@ public class ScoreDto {
     public double attentionScore = 0.0;
 
     public double totalScore = 0.0;
+
+    public RewardDto.EarnComplexRequest.ScoreInfo toScoreInfo() {
+        return RewardDto.EarnComplexRequest.ScoreInfo.builder()
+                .carbon((int) ecoScore)
+                .safety((int) safetyScore)
+                .accident((int) accelerationScore)
+                .focus((int) attentionScore)
+                .build();
+    }
 }

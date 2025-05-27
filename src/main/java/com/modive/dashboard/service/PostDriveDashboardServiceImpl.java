@@ -2,6 +2,7 @@ package com.modive.dashboard.service;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.modive.dashboard.client.LLMClient;
+import com.modive.dashboard.client.RewardClient;
 import com.modive.dashboard.dto.*;
 import com.modive.dashboard.dto.detail.*;
 import com.modive.dashboard.entity.Drive;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -34,6 +36,8 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     private LLMRequestGenerator llmRequestGenerator;
     @Autowired
     private TotalDashboardService totalDashboardService;
+    @Autowired
+    private RewardClient rewardClient;
 
     // 1. 주행 후 대시보드 생성
     @Override
@@ -73,8 +77,22 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
         driveDashboardRepository.save(dashboard);
         // 비동기 처리하자.
-        totalDashboardService.updateTotalDashboard(userId, dashboard);
+        List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
         totalDashboardService.updateStatistics(data, score);
+        EarnReward(dashboard, scoreList);
+    }
+
+    // 1-5. 씨앗 적립 요청
+    private void EarnReward(DriveDashboard dashboard, List<ScoreDto> scoreList) {
+        RewardDto.EarnComplexRequest earnComplexRequest = RewardDto.EarnComplexRequest.builder()
+                .driveId(Long.parseLong(dashboard.getDriveId()))
+                .score((int) dashboard.getScores().getTotalScore())
+                .drivingTime((int) Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes())
+                .lastScore(scoreList.get(0).toScoreInfo())
+                .currentScore(scoreList.get(1).toScoreInfo())
+                .build();
+
+        rewardClient.earnReward(dashboard.getUserId(), earnComplexRequest);
     }
 
     // 2. 주행 후 대시보드 조회

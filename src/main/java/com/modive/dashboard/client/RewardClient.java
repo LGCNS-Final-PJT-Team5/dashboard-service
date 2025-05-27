@@ -1,16 +1,17 @@
 package com.modive.dashboard.client;
 
-import com.modive.dashboard.dto.DriveFeedbackRequest;
 import com.modive.dashboard.dto.DriveFeedbacksDto;
+import com.modive.dashboard.dto.RewardDto;
 import com.modive.dashboard.dto.SingleDriveFeedbackRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "llm-service")
-public interface LLMClient {
+@FeignClient(name = "reward-service")
+public interface RewardClient {
 
-    @PostMapping("/llm/post-feedbacks")
-    DriveFeedbacksDto getDriveFeedbacks(@RequestBody SingleDriveFeedbackRequest params);
+    @PostMapping("/reward/earn")
+    void earnReward(@RequestHeader("X-User-Id") String userId, @RequestBody RewardDto.EarnComplexRequest request);
 
 }

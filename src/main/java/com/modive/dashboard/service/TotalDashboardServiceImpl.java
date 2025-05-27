@@ -103,7 +103,7 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     //<editor-folder desc="# Async methods">
     // 4. 누적 대시보드 업데이트
     @Override
-    public void updateTotalDashboard(String userId, DriveDashboard driveDashboard) {
+    public ArrayList<ScoreDto> updateTotalDashboard(String userId, DriveDashboard driveDashboard) {
         TotalDashboard totalDashboard = totalDashboardRepository.findById(userId);
 
         if (totalDashboard == null) {
@@ -112,9 +112,14 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
 
         totalDashboard.setUpdatedAt(driveDashboard.getEndTime());
         totalDashboard.setTotalDriveCount(totalDashboard.getTotalDriveCount() + 1);
-        totalDashboard.setScores(scoreCalculator.calculateTotalScore(totalDashboard.getScores(), driveDashboard.getScores(), totalDashboard.getTotalDriveCount()));
+
+        ScoreDto lastScore = totalDashboard.getScores();
+        ScoreDto currentScore = scoreCalculator.calculateTotalScore(totalDashboard.getScores(), driveDashboard.getScores(), totalDashboard.getTotalDriveCount());
+        totalDashboard.setScores(currentScore);
 
         totalDashboardRepository.save(totalDashboard);
+
+        return new ArrayList<ScoreDto>(List.of(lastScore, currentScore));
     }
 
     // 5. 평균 업데이트
