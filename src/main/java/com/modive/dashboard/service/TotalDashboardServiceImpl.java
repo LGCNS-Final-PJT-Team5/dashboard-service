@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -93,8 +94,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
         report.setDriveCount(dashboards.size());
         report.setScores(scoreCalculator.calculateAverageScore(scores));
 
-        report.setTotalFeedback("total feedback입니다.");
-        report.setDetailedFeedback("detail feedback입니다.");
+        report.setTotalFeedback(new ReportDto.TotalFeedback("total title", "total content"));
+        report.setDetailedFeedback(new ReportDto.DetailedFeedback("detailed title", "detailed content", new ArrayList<>(List.of("a", "b", "c"))));
 
         return report;
     }

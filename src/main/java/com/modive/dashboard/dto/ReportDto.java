@@ -2,9 +2,12 @@ package com.modive.dashboard.dto;
 
 import com.modive.dashboard.entity.TotalDashboard;
 import com.modive.dashboard.enums.UserType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class ReportDto {
@@ -14,7 +17,24 @@ public class ReportDto {
     public int driveCount;                  // 누적운전횟수
     public ScoreDto scores;
 
-    public String totalFeedback;
-    public String detailedFeedback;
+    public TotalFeedback totalFeedback;
+    public DetailedFeedback detailedFeedback;
     // 피드백 형식은 추후 구체화
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TotalFeedback {
+        public String title;
+        public String content;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DetailedFeedback {
+        public String title;
+        public String content;
+        public List<String> feedback;
+    }
 }
