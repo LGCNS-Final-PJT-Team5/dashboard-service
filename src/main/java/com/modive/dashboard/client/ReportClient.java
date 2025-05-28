@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(url = "http://localhost:8080/report")
+@FeignClient(name = "report-service", url = "http://modive.site:60010")
 public interface ReportClient {
 
-    @PostMapping()
+    @PostMapping("/agent/weekly")
     ReportResponse getReport(@RequestBody ReportRequest request);
 
 }

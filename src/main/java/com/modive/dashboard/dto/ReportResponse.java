@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class ReportResponse {
     public Feedbacks data;
-    public int status;
+    public int code;
+    public String message;
 
     @Data
     @AllArgsConstructor

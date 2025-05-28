@@ -6,14 +6,12 @@ import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.ReportResponse;
 import com.modive.dashboard.dto.ScoreDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
-import com.modive.dashboard.entity.Drive;
-import com.modive.dashboard.entity.DriveDashboard;
-import com.modive.dashboard.entity.Statistics;
-import com.modive.dashboard.entity.TotalDashboard;
+import com.modive.dashboard.entity.*;
 import com.modive.dashboard.enums.UserType;
 import com.modive.dashboard.repository.DriveDashboardRepository;
 import com.modive.dashboard.repository.StatisticsRepository;
 import com.modive.dashboard.repository.TotalDashboardRepository;
+import com.modive.dashboard.repository.WeeklyDashboardRepository;
 import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.tools.ScoreCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -41,6 +40,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     private DriveDashboardRepository driveDashboardRepository;
     @Autowired
     private ReportClient reportClient;
+    @Autowired
+    private WeeklyDashboardRepository weeklyDashboardRepository;
 
     // 1. 누적 대시보드 생성
     @Override
@@ -81,6 +82,17 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     @Override
     public ReportDto makeReport(String userId) {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
+        String now = formatter.format(Instant.now());
+
+        WeeklyDashboard dashboard = weeklyDashboardRepository.findById(userId + "-" + now);
+
+        if (dashboard != null) {
+            return dashboard.toReportDto();
+        }
+
+        // 새로 생성하는 부분.
+
         ReportDto report = new ReportDto();
 
         List<DriveDashboard> dashboards = driveDashboardRepository.findByStartTimeAfter(userId, Instant.now().minus(7, ChronoUnit.DAYS));
@@ -101,13 +113,14 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
         // AI Agent에서 받아오는 부분
         ReportResponse response = reportClient.getReport(report.ToReportRequest());
 
-        if (response == null || response.getStatus() != 200) {
+        if (response == null || response.getCode() != 200) {
             throw new NotFoundException("시스템 장애로 리포트를 받아올 수 없습니다.");
         }
 
         report.setTotalFeedback(response.getData().totalFeedback);
         report.setDetailedFeedback(response.getData().detailedFeedback);
 
+        weeklyDashboardRepository.save(report.ToWeeklyDashboard());
         return report;
     }
 
