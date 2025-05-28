@@ -1,7 +1,9 @@
 package com.modive.dashboard.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.modive.dashboard.client.ReportClient;
 import com.modive.dashboard.dto.ReportDto;
+import com.modive.dashboard.dto.ReportResponse;
 import com.modive.dashboard.dto.ScoreDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
 import com.modive.dashboard.entity.Drive;
@@ -37,6 +39,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     private StatisticsRepository statisticsRepository;
     @Autowired
     private DriveDashboardRepository driveDashboardRepository;
+    @Autowired
+    private ReportClient reportClient;
 
     // 1. 누적 대시보드 생성
     @Override
@@ -94,8 +98,15 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
         report.setDriveCount(dashboards.size());
         report.setScores(scoreCalculator.calculateAverageScore(scores));
 
-        report.setTotalFeedback(new ReportDto.TotalFeedback("total title", "total content"));
-        report.setDetailedFeedback(new ReportDto.DetailedFeedback("detailed title", "detailed content", new ArrayList<>(List.of("a", "b", "c"))));
+        // AI Agent에서 받아오는 부분
+        ReportResponse response = reportClient.getReport(report.ToReportRequest());
+
+        if (response == null || response.getStatus() != 200) {
+            throw new NotFoundException("시스템 장애로 리포트를 받아올 수 없습니다.");
+        }
+
+        report.setTotalFeedback(response.getData().totalFeedback);
+        report.setDetailedFeedback(response.getData().detailedFeedback);
 
         return report;
     }

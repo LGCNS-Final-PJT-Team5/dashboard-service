@@ -19,7 +19,6 @@ public class ReportDto {
 
     public TotalFeedback totalFeedback;
     public DetailedFeedback detailedFeedback;
-    // 피드백 형식은 추후 구체화
 
     @Data
     @AllArgsConstructor
@@ -36,5 +35,14 @@ public class ReportDto {
         public String title;
         public String content;
         public List<String> feedback;
+    }
+
+    public ReportRequest ToReportRequest() {
+        ReportRequest request = new ReportRequest();
+        request.setUserId(userId);
+        request.setUserType(userType);
+        request.setScores(scores);
+
+        return request;
     }
 }
