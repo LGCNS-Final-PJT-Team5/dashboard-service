@@ -16,3 +16,10 @@ healthCheck:
   port: 8080
   initialDelaySeconds: 30
   periodSeconds: 10
+
+# Dashboard Service Config
+config:
+  server:
+    port: 8080
+  app:
+    name: dashboard-service
