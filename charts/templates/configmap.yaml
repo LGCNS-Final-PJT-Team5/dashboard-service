@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-config
   labels:
-    app: user-service
+    app: dashboard-service
     version: {{ .Chart.AppVersion | default "1.0" }}
 data:
   application.yml: |
@@ -12,17 +12,6 @@ data:
     spring:
       application:
         name: {{ .Values.config.app.name | default "dashboard-service" }}
-      cloud:
-        kubernetes:
-          discovery:
-            enabled: true
-            verify-ssl: false
-            discovery-server-url: https://kubernetes.default.svc  # 쿠버네티스 API Server 주소
-            all-namespaces: true      # 다른 네임스페이스의 서비스도 찾기
-            include-not-ready-addresses: false  # 준비된 Pod만 포함
-          client:
-            namespace: dashboard-service
-            trust-certs: true     # 모든 쿠버네티스 API 호출에서 인증서 신뢰
     management:
       endpoints:
         web:
