@@ -12,6 +12,15 @@ data:
     spring:
       application:
         name: {{ .Values.config.app.name | default "dashboard-service" }}
+      cloud:
+        kubernetes:
+          discovery:
+            enabled: true
+            discovery-server-url: https://kubernetes.default.svc  # 쿠버네티스 API Server 주소
+            all-namespaces: true      # 다른 네임스페이스의 서비스도 찾기
+            include-not-ready-addresses: false  # 준비된 Pod만 포함
+          client:
+            namespace: dashboard-service
     management:
       endpoints:
         web:
