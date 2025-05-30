@@ -27,7 +27,7 @@ public class AdminDashboardController {
 
         if (totalDriveCount != null) {
             AdminResponse<TotalDriveCount> adminResponse =
-                    new AdminResponse<>(200, "발급 사유별 월별 통계에 성공했습니다.",  Map.of("totalDriveCount", totalDriveCount));
+                    new AdminResponse<>(200, "발급 사유별 월별 통계에 성공했습니다.",  Map.of("totalDrives", totalDriveCount));
             return ResponseEntity.ok(adminResponse); // 200 OK
         } else {
             AdminResponse<TotalDriveCount> adminResponse =

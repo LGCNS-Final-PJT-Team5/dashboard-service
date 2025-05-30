@@ -54,6 +54,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
         return new TotalDriveCount(totalDriveCount, changeRate);
     }
+
     private int getDriveCountOrZero(String key) {
         Statistics stats = statisticsRepository.find(key);
         return (stats != null) ? stats.getTotalDriveCount() : 0;
