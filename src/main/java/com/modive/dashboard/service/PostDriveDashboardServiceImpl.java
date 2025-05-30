@@ -85,7 +85,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     // 1-5. 씨앗 적립 요청
     private void EarnReward(DriveDashboard dashboard, List<ScoreDto> scoreList) {
         RewardDto.EarnComplexRequest earnComplexRequest = RewardDto.EarnComplexRequest.builder()
-                .driveId(Long.parseLong(dashboard.getDriveId()))
+                .driveId(dashboard.getDriveId())
                 .score((int) dashboard.getScores().getTotalScore())
                 .drivingTime((int) Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes())
                 .lastScore(scoreList.get(0).toScoreInfo())

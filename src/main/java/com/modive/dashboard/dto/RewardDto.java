@@ -13,7 +13,7 @@ public class RewardDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class EarnComplexRequest {
-        private Long driveId;
+        private String driveId;
         private Integer score;
 
         @JsonProperty("주행 시간")
