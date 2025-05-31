@@ -26,3 +26,7 @@ config:
   service:
     llm:
       url: http://llm-service.llm-service.svc.cluster.local:80
+    report:
+      url: http://report-service.report-service.svc.cluster.local:80
+    reward:
+      url: http://reward-service.reward-service.svc.cluster.local:80

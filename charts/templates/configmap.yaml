@@ -24,3 +24,7 @@ data:
     service:
       llm:
         url: {{ .Values.config.service.llm.url | default "http://llm-service.llm-service.svc.cluster.local:80" }}
+      report:
+        url: {{ .Values.config.service.report.url | default "http://report-service.report-service.svc.cluster.local:80" }}
+      reward:
+        url: {{ .Values.config.service.reward.url | default "http://reward-service.reward-service.svc.cluster.local:80" }}
