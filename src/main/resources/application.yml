@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: dashboard-service
+  config:
+    import: configserver:${CONFIG_URI:http://localhost:8888}
+  cloud:
+    config:
+      profile: dev
+      label: main
+aws:
+  dynamodb:
+    endpoint: http://localhost:8000 # 로컬 테스트 용
+  region: ${AWS_REGION}
+  accessKey: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}

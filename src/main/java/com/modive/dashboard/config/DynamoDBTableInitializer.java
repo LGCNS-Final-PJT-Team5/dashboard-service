@@ -118,4 +118,25 @@ public class DynamoDBTableInitializer {
         }
     }
 
+    @PostConstruct
+    public void createWeeklyDashboardIfNotExists() {
+        ListTablesResult tables = dynamoDB.listTables();
+        if (!tables.getTableNames().contains("weekly-dashboard")) {
+            CreateTableRequest request = new CreateTableRequest()
+                    .withTableName("weekly-dashboard")
+                    .withKeySchema(
+                            new KeySchemaElement("dashboardId", KeyType.HASH)
+                    )
+                    .withAttributeDefinitions(
+                            new AttributeDefinition("dashboardId", ScalarAttributeType.S)
+                    )
+                    .withBillingMode(BillingMode.PAY_PER_REQUEST);
+
+            dynamoDB.createTable(request);
+            System.out.println("✅ DynamoDB 테이블 'weekly-dashboard' 생성됨");
+        } else {
+            System.out.println("ℹ️ DynamoDB 테이블 'weekly-dashboard' 이미 존재함");
+        }
+    }
+
 }
