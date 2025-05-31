@@ -23,3 +23,6 @@ config:
     port: 8080
   app:
     name: dashboard-service
+  service:
+    llm:
+      url: http://llm-service.llm-service.svc.cluster.local:80

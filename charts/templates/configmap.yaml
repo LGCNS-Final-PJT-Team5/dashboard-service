@@ -21,3 +21,6 @@ data:
       region: ${AWS_REGGION}
       accessKey: ${AWS_ACCESS_KEY_ID}
       secretKey: ${AWS_SECRET_ACCESS_KEY}
+    service:
+      llm:
+        url: {{ .Values.config.service.llm.url | default "http://llm-service.llm-service.svc.cluster.local:80" }}
