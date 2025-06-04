@@ -46,6 +46,7 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     // 1. 누적 대시보드 생성
     @Override
     public void createTotalDashboard(String userId) {
+
         TotalDashboard existing = totalDashboardRepository.findById(userId);
 
         if (existing != null) {

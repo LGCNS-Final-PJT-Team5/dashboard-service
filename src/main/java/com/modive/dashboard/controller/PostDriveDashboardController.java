@@ -9,6 +9,7 @@ import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.service.PostDriveDashboardService;
 import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.utils.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dashboard/post-drive")
+@RequiredArgsConstructor
 public class PostDriveDashboardController {
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
     @Autowired
     private PostDriveDashboardService postDriveDashboardService;

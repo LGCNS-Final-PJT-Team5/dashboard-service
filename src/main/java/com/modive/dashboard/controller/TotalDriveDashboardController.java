@@ -4,15 +4,17 @@ import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.TotalDashboardResponse;
 import com.modive.dashboard.service.TotalDashboardService;
 import com.modive.dashboard.utils.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/dashboard/total")
+@RequiredArgsConstructor
 public class TotalDriveDashboardController {
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
     @Autowired
     private TotalDashboardService totalDashboardService;
