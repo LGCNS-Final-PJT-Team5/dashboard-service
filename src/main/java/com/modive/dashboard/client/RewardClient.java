@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name="reward-service",
-        url="${service.reard.url}")
+        url="${service.reward.url}")
 public interface RewardClient {
 
     @PostMapping("/reward/earn")
