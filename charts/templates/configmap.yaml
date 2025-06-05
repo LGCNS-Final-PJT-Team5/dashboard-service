@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+  labels:
+    app: dashboard-service
+    version: {{ .Chart.AppVersion | default "1.0" }}
+data:
+  application.yml: |
+    server:
+      port: {{ .Values.config.server.port | default 8080 }}
+    spring:
+      application:
+        name: {{ .Values.config.app.name | default "dashboard-service" }}
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: "*"
+    aws:
+      region: ${AWS_REGGION}
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    service:
+      llm:
+        url: {{ .Values.config.service.llm.url | default "http://llm-service.llm-service.svc.cluster.local:80" }}
+      report:
+        url: {{ .Values.config.service.report.url | default "http://report-service.report-service.svc.cluster.local:80" }}
+      reward:
+        url: {{ .Values.config.service.reward.url | default "http://reward-service.reward-service.svc.cluster.local:80" }}
