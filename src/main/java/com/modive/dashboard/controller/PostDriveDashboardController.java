@@ -8,6 +8,8 @@ import com.modive.dashboard.entity.Drive;
 import com.modive.dashboard.enums.ScoreType;
 import com.modive.dashboard.service.PostDriveDashboardService;
 import com.modive.dashboard.tools.NotFoundException;
+import com.modive.dashboard.utils.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dashboard/post-drive")
+@RequiredArgsConstructor
 public class PostDriveDashboardController {
+
+    private final JwtUtils jwtUtils;
 
     @Autowired
     private PostDriveDashboardService postDriveDashboardService;
@@ -36,10 +41,10 @@ public class PostDriveDashboardController {
     // 2. 주행 후 대시보드 조회
     @GetMapping("/{driveId}")
     public ResponseEntity<Object> getPostDriveDashboard(
-            @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
+            //@RequestHeader("X-User-Id") String userId, // TODO: userId 연동
             @PathVariable String driveId
     ) {
-
+        String userId = jwtUtils.getUserId();
         DriveDashboardResponse drive = postDriveDashboardService.getPostDriveDashboard(userId, driveId);
 
         return drive == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(drive);
@@ -48,10 +53,11 @@ public class PostDriveDashboardController {
     // 3. 주행 후 대시보드 상세 조회 (safe, eco, prevention, attention)
     @GetMapping("/{driveId}/{scoreType}")
     public ResponseEntity<Object> getDetailDashboard(
-            @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
+            //@RequestHeader("X-User-Id") String userId, // TODO: userId 연동
             @PathVariable String driveId,
             @PathVariable String scoreType
     ) {
+        String userId = jwtUtils.getUserId();
         ScoreType type;
         try {
             type = ScoreType.fromString(scoreType);
@@ -67,12 +73,12 @@ public class PostDriveDashboardController {
     // 4. 주행 후 대시보드 목록 조회
     @GetMapping()
     public ResponseEntity<Object> getPostDriveDashboards(
-            @RequestHeader("X-User-Id") String userId, // TODO: userId 연동
+            //@RequestHeader("X-User-Id") String userId, // TODO: userId 연동
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String driveId
     ) {
-
+        String userId = jwtUtils.getUserId();
         PaginatedListResponse<DriveListDto> dtos = postDriveDashboardService.getPostDriveDashboardList(userId, startTime, driveId, pageSize);
         return ResponseEntity.ok(dtos);
     }
