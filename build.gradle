@@ -52,6 +52,9 @@ dependencies {
 //	implementation platform('software.amazon.awssdk:bom:2.20.56')
 //	implementation("software.amazon.awssdk:dynamodb")
 //	implementation("software.amazon.awssdk:dynamodb-enhanced")
+
+	// Micrometer Prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 dependencyManagement {
