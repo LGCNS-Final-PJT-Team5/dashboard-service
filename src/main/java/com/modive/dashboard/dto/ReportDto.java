@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 public class ReportDto {
     public String userId;                   // 사용자 ID
-    public UserType userType;
+    public String userType;
 
     public int driveCount;                  // 누적운전횟수
     public ScoreDto scores;

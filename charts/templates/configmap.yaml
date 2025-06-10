@@ -38,3 +38,5 @@ data:
         url: {{ .Values.config.service.report.url | default "http://report-service.report-service.svc.cluster.local:80" }}
       reward:
         url: {{ .Values.config.service.reward.url | default "http://reward-service.reward-service.svc.cluster.local:80" }}
+      user:
+        url: {{ .Values.config.service.user.url | default "http://user-service.user-service.svc.cluster.local:80" }}

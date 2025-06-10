@@ -2,6 +2,7 @@ package com.modive.dashboard.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.modive.dashboard.client.ReportClient;
+import com.modive.dashboard.client.UserClient;
 import com.modive.dashboard.dto.ReportDto;
 import com.modive.dashboard.dto.ReportResponse;
 import com.modive.dashboard.dto.ScoreDto;
@@ -42,6 +43,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
     private ReportClient reportClient;
     @Autowired
     private WeeklyDashboardRepository weeklyDashboardRepository;
+    @Autowired
+    private UserClient userClient;
 
     // 1. 누적 대시보드 생성
     @Override
@@ -106,8 +109,14 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
                 .map(DriveDashboard::getScores)
                 .toList();
 
+        String userType = userClient.getUserInterest(userId);
+
+        if (userType == null) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 UserType을 받아올 수 없습니다.");
+        }
+
         report.setUserId(userId);
-        report.setUserType(UserType.ECO); // TODO: 유저 타입 받아오기
+        report.setUserType(userType);
         report.setDriveCount(dashboards.size());
         report.setScores(scoreCalculator.calculateAverageScore(scores));
 

@@ -30,3 +30,5 @@ config:
       url: http://agent-service.agent-service.svc.cluster.local:80
     reward:
       url: http://reward-service.reward-service.svc.cluster.local:80
+    user:
+      url: http://user-service.user-service.svc.cluster.local:80

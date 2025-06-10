@@ -7,6 +7,6 @@ import lombok.Data;
 public class ReportRequest {
 
     public String userId;                   // 사용자 ID
-    public UserType userType;
+    public String userType;
     public ScoreDto scores;
 }
