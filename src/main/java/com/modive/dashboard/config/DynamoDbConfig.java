@@ -18,13 +18,13 @@ import java.net.URI;
 @Configuration
 public class DynamoDbConfig {
 
-    @Value("${aws.dynamodb.endpoint}")
-    private String endPoint;
+//    @Value("${aws.dynamodb.endpoint}")
+//    private String endPoint;
 
     @Value("${aws.region}")
     private String region;
 
-    @Value("${aws.accessKey}")
+    @Value("${aws.accessKey}") 
     private String accessKey;
 
     @Value("${aws.secretKey}")
