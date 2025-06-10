@@ -33,6 +33,7 @@ public class PostDriveDashboardController {
             @RequestParam String driveId
     ) {
 
+        System.out.println("대시보드 생성 API 호출됨.");
         postDriveDashboardService.createPostDriveDashboard(userId, driveId);
 
         return ResponseEntity.noContent().build();
