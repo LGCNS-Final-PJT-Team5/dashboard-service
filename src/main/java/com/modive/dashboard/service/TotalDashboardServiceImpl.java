@@ -3,10 +3,7 @@ package com.modive.dashboard.service;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.modive.dashboard.client.ReportClient;
 import com.modive.dashboard.client.UserClient;
-import com.modive.dashboard.dto.ReportDto;
-import com.modive.dashboard.dto.ReportResponse;
-import com.modive.dashboard.dto.ScoreDto;
-import com.modive.dashboard.dto.TotalDashboardResponse;
+import com.modive.dashboard.dto.*;
 import com.modive.dashboard.entity.*;
 import com.modive.dashboard.enums.UserType;
 import com.modive.dashboard.repository.DriveDashboardRepository;
@@ -109,7 +106,8 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
                 .map(DriveDashboard::getScores)
                 .toList();
 
-        String userType = userClient.getUserInterest(userId);
+        UserTypeResponse userTypeResponse = userClient.getUserInterest(userId);
+        String userType = userTypeResponse.data;
 
         if (userType == null) {
             throw new NotFoundException("[" + userId + "]에 해당하는 UserType을 받아올 수 없습니다.");
