@@ -51,6 +51,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
 
         // 1-1. 데이터 가져오기
         Drive data = driveRepository.findById(userId, driveId);
+        // Drive data = getDummyDrive(userId, driveId);
 
         if (data == null) {
             throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
@@ -75,11 +76,11 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         dashboard.setScores(score);
         dashboard.setFeedbacks(feedbacks);
 
-        driveDashboardRepository.save(dashboard);
         // 비동기 처리하자.
         List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
+        driveDashboardRepository.save(dashboard);
         totalDashboardService.updateStatistics(data, score);
-        if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 10) EarnReward(dashboard, scoreList);
+        if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 0) EarnReward(dashboard, scoreList);
     }
 
     // 1-5. 씨앗 적립 요청
