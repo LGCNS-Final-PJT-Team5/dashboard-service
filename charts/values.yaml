@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: 026274465258.dkr.ecr.ap-northeast-2.amazonaws.com/dashboard-service
-  tag: 20250610-f45a21b
+  tag: 20250610-56b78c2
   pullPolicy: IfNotPresent    # 이미지 가져오는 정책 로컬에 없을 때만 pull
 
 service:
