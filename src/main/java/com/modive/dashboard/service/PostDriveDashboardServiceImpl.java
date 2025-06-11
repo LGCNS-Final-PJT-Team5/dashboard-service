@@ -200,7 +200,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         inactivity.score = dashboard.getScores().inactivityScore;
 
         drivingTime.feedback = dashboard.getFeedbacks().totalDrivingMinutesFeedback;
-        inactivity.feedback = dashboard.getFeedbacks().inactivityTimeMinutesFeedback;
+        inactivity.feedback = dashboard.getFeedbacks().inactivityCountFeedback;
 
         drivingTime.graph = List.of(
                 Map.of("startTime", drive.getStartTime(), "endTime", drive.getEndTime()));

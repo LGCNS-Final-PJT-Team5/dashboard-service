@@ -21,7 +21,7 @@ public class DriveFeedbacksDto {
 //    public String accidentPreventionFeedback;
 
     public String totalDrivingMinutesFeedback;
-    public String inactivityTimeMinutesFeedback;
+    public String inactivityCountFeedback;
 //    public String attentionFeedback;
 
     public String totalFeedback;
