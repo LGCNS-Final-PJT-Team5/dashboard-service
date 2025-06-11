@@ -62,14 +62,14 @@ public class LLMRequestGenerator {
         }
 
         // 평균 반응 시간 (밀리초)
-        double avgReactionMilliSec = 0.0;
+        double avgReactionSec = 0.0;
         if (drive.getReactionTimes() != null && !drive.getReactionTimes().isEmpty()) {
-            avgReactionMilliSec = drive.getReactionTimes().stream()
-                    .mapToLong(rt -> Duration.between(rt.getStartTime(), rt.getEndTime()).toMillis())
+            avgReactionSec = drive.getReactionTimes().stream()
+                    .mapToLong(rt -> Duration.between(rt.getStartTime(), rt.getEndTime()).toSeconds())
                     .average()
                     .orElse(0.0);
         }
-        request.setAverageReactionTimeMilliSeconds(avgReactionMilliSec);
+        request.setAverageReactionTimeSeconds(avgReactionSec);
 
         // 차선 이탈 수
         request.setLaneDepartureCount(
@@ -112,7 +112,7 @@ public class LLMRequestGenerator {
         params.put("steadySpeedMiddleRatio", feedback.getSteadySpeedMiddleRatio());
         params.put("steadySpeedHighRatio", feedback.getSteadySpeedHighRatio());
 
-        params.put("averageReactionTimeMilliSeconds", feedback.getAverageReactionTimeMilliSeconds());
+        params.put("averageReactionTimeSeconds", feedback.getAverageReactionTimeSeconds());
 
         params.put("laneDepartureCount", feedback.getLaneDepartureCount());
         params.put("safeDistanceNotMaintainSeconds", feedback.getSafeDistanceNotMaintainSeconds());
