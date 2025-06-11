@@ -20,7 +20,7 @@ public class WeeklyDashboard {
     private String dashboardId;
     private String userId;
 
-    //@DynamoDBTypeConvertedEnum
+    @DynamoDBTypeConvertedEnum
     private UserType userType;
 
     private int driveCount;
