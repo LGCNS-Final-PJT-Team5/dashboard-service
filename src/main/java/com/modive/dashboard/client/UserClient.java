@@ -13,6 +13,6 @@ public interface UserClient {
     @GetMapping("/user/interest")
     UserTypeResponse getUserInterest(@RequestHeader("X-USER-ID") String userId);
 
-    @GetMapping("/user")
-    UserInfoResponse getUser(@RequestParam("userId") String userId);
+    @GetMapping("/user/{userId}")
+    UserInfoResponse getUser(@PathVariable("userId") String userId);
 }
