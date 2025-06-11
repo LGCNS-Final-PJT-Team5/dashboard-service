@@ -112,19 +112,10 @@ public class ScoreCalculator {
 
     // 사고 예방 점수: 반응속도
     private double calcReactionTimeScore(Drive drive) {
-        List<Drive.StartEndTime> reactionTimes = drive.getReactionTimes();
-        if (reactionTimes == null || reactionTimes.isEmpty()) {
-            return 100.0;
+        if (drive.getReactionTimes() == null) {
+            return 100;
         }
-
-        double x = 0, y = 0;
-        for (Drive.StartEndTime rt : reactionTimes) {
-            if (rt == null || rt.getStartTime() == null || rt.getEndTime() == null) continue;
-            double delta = Duration.between(rt.getStartTime(), rt.getEndTime()).toMillis() / 1000.0;
-            if (delta < 0.9) x++;
-            else y++;
-        }
-        return (x + y == 0) ? 100 : 100.0 * x / (x + y);
+        return Math.max(0, 100 - (10 * drive.getReactionTimes().size()));
     }
 
     // 사고 예방 점수: 차선이탈
@@ -137,17 +128,10 @@ public class ScoreCalculator {
 
     // 사고 예방 점수: 안전거리 미유지 (초당 3점 감점)
     private double calcFollowingDistanceScore(Drive drive) {
-        List<Drive.StartEndTime> events = drive.getFollowingDistanceEvents();
-        if (events == null || events.isEmpty()) {
-            return 100.0;
+        if (drive.getFollowingDistanceEvents() == null) {
+            return 100;
         }
-
-        long totalSeconds = events.stream()
-                .filter(event -> event != null && event.getStartTime() != null && event.getEndTime() != null)
-                .mapToLong(event -> Duration.between(event.getStartTime(), event.getEndTime()).getSeconds())
-                .sum();
-
-        return Math.max(0, 100 - (3 * totalSeconds));
+        return Math.max(0, 100 - (10 * drive.getFollowingDistanceEvents().size()));
     }
 
     // 주의력 점수: 운전 시간

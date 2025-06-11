@@ -60,7 +60,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         // 1-2. 점수 산정
         ScoreDto score = scoreCalculator.calculateDriveScore(data);
 
-        // 1-3. 피드백 받아오기 // TODO: LLM 서비스에서 피드백 받아오기
+        // 1-3. 피드백 받아오기
         DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
         SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
         System.out.println(params); //임시

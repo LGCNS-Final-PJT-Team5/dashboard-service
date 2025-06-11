@@ -14,10 +14,10 @@ public class DriveFeedbackRequest {
     private int steadySpeedMiddleRatio;
     private int steadySpeedHighRatio;
 
-    private double averageReactionTimeSeconds; //averageReactionTimeSeconds
+    private double reactionDelayCount; //averageReactionTimeSeconds
 
     private int laneDepartureCount;
-    private int safeDistanceNotMaintainSeconds;
+    private int safeDistanceNotMaintainCount; //safeDistanceNotMaintainSeconds
 
     private int totalDrivingMinutes;
     private int inactivityCount;

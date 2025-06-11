@@ -62,14 +62,18 @@ public class LLMRequestGenerator {
         }
 
         // 평균 반응 시간 (밀리초)
-        double avgReactionSec = 0.0;
-        if (drive.getReactionTimes() != null && !drive.getReactionTimes().isEmpty()) {
-            avgReactionSec = drive.getReactionTimes().stream()
-                    .mapToLong(rt -> Duration.between(rt.getStartTime(), rt.getEndTime()).toSeconds())
-                    .average()
-                    .orElse(0.0);
-        }
-        request.setAverageReactionTimeSeconds(avgReactionSec);
+//        double avgReactionSec = 0.0;
+//        if (drive.getReactionTimes() != null && !drive.getReactionTimes().isEmpty()) {
+//            avgReactionSec = drive.getReactionTimes().stream()
+//                    .mapToLong(rt -> Duration.between(rt.getStartTime(), rt.getEndTime()).toSeconds())
+//                    .average()
+//                    .orElse(0.0);
+//        }
+//        request.setAverageReactionTimeSeconds(avgReactionSec);
+        request.setReactionDelayCount(
+                drive.getReactionTimes() != null ? drive.getReactionTimes().size() : 0
+        );
+
 
         // 차선 이탈 수
         request.setLaneDepartureCount(
@@ -77,13 +81,16 @@ public class LLMRequestGenerator {
         );
 
         // 안전거리 미유지 시간 (초)
-        int safeDistanceSeconds = 0;
-        if (drive.getFollowingDistanceEvents() != null) {
-            safeDistanceSeconds = drive.getFollowingDistanceEvents().stream()
-                    .mapToInt(p -> (int) Duration.between(p.getStartTime(), p.getEndTime()).toSeconds())
-                    .sum();
-        }
-        request.setSafeDistanceNotMaintainSeconds(safeDistanceSeconds);
+//        int safeDistanceSeconds = 0;
+//        if (drive.getFollowingDistanceEvents() != null) {
+//            safeDistanceSeconds = drive.getFollowingDistanceEvents().stream()
+//                    .mapToInt(p -> (int) Duration.between(p.getStartTime(), p.getEndTime()).toSeconds())
+//                    .sum();
+//        }
+//        request.setSafeDistanceNotMaintainSeconds(safeDistanceSeconds);
+        request.setSafeDistanceNotMaintainCount(
+                drive.getFollowingDistanceEvents() != null ? drive.getFollowingDistanceEvents().size() : 0
+        );
 
         // 전체 운전 시간 (분)
         int totalDrivingMinutes = (int) Duration.between(drive.getStartTime(), drive.getEndTime()).toMinutes();
@@ -112,10 +119,10 @@ public class LLMRequestGenerator {
         params.put("steadySpeedMiddleRatio", feedback.getSteadySpeedMiddleRatio());
         params.put("steadySpeedHighRatio", feedback.getSteadySpeedHighRatio());
 
-        params.put("averageReactionTimeSeconds", feedback.getAverageReactionTimeSeconds());
+        params.put("reactionDelayCount", feedback.getReactionDelayCount());
 
         params.put("laneDepartureCount", feedback.getLaneDepartureCount());
-        params.put("safeDistanceNotMaintainSeconds", feedback.getSafeDistanceNotMaintainSeconds());
+        params.put("safeDistanceNotMaintainCount", feedback.getSafeDistanceNotMaintainCount());
 
         params.put("totalDrivingMinutes", feedback.getTotalDrivingMinutes());
         params.put("inactivityCount", feedback.getInactivityCount());
