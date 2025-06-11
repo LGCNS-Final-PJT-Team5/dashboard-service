@@ -17,12 +17,20 @@ public enum UserType {
     }
 
     public static UserType fromLabel(String label) {
-        for (UserType type : values()) {
+        // 1. enum name으로 매칭
+        for (UserType type : UserType.values()) {
+            if (type.name().equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+
+        // 2. label 값으로 매칭
+        for (UserType type : UserType.values()) {
             if (type.label.equals(label)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unknown label: " + label);
+        throw new IllegalArgumentException("[" + label + "]을 UserType으로 처리할 수 없습니다.");
     }
 
     public String getLabel() {
