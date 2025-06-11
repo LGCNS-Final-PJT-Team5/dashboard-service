@@ -14,7 +14,7 @@ healthCheck:
   enabled: true
   path: /actuator/health
   port: 8080
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 10
 
 # Dashboard Service Config
