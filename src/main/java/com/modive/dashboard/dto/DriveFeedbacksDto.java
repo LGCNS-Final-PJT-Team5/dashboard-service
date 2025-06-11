@@ -15,9 +15,9 @@ public class DriveFeedbacksDto {
     public String overspeedCountFeedback;
 //    public String safetyFeedback;
 
-    public String averageReactionTimeSecondsFeedback;
+    public String reactionDelayCountFeedback;
     public String laneDepartureCountFeedback;
-    public String safeDistanceMaintainMinutesFeedback;
+    public String safeDistanceNotMaintainCountFeedback;
 //    public String accidentPreventionFeedback;
 
     public String totalDrivingMinutesFeedback;

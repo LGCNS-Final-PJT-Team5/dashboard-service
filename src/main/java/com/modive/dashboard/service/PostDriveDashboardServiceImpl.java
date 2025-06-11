@@ -229,9 +229,9 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         laneDeparture.score = dashboard.getScores().laneDepartureScore;
         followingDistance.score = dashboard.getScores().followingDistanceScore;
 
-        reaction.feedback = dashboard.getFeedbacks().averageReactionTimeSecondsFeedback;
+        reaction.feedback = dashboard.getFeedbacks().reactionDelayCountFeedback;
         laneDeparture.feedback = dashboard.getFeedbacks().laneDepartureCountFeedback;
-        followingDistance.feedback = dashboard.getFeedbacks().safeDistanceMaintainMinutesFeedback;
+        followingDistance.feedback = dashboard.getFeedbacks().safeDistanceNotMaintainCountFeedback;
 
         reaction.graph = drive.getReactionTimes();
         laneDeparture.graph = drive.getLaneDepartures();
