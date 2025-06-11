@@ -7,6 +7,7 @@ import com.modive.dashboard.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -17,7 +18,8 @@ import java.util.List;
 @Data
 public class ReportDto {
     public String userId;                   // 사용자 ID
-    public String userType;
+    public UserType userType;
+    public String nickname;
 
     public int driveCount;                  // 누적운전횟수
     public ScoreDto scores;
@@ -48,6 +50,7 @@ public class ReportDto {
         ReportRequest request = new ReportRequest();
         request.setUserId(userId);
         request.setUserType(userType);
+        request.setNickname(nickname);
         request.setScores(scores);
 
         return request;

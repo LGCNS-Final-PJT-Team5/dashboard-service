@@ -1,27 +1,32 @@
 package com.modive.dashboard.enums;
 
 public enum UserType {
-    // 1. 연비
-    ECO,
+    ECO("연비"),
+    INSURANCE("보험료"),
+    BEGINNER("초보운전"),
+    REWARD("앱테크"),
+    MAINTENANCE("차량관리"),
+    CARBON("탄소절감"),
+    DRIVESTAR("드라이브스타"),
+    TECHNIQUE("드라이빙테크닉");
 
-    // 2. 보험료
-    INSURANCE,
+    private final String label;
 
-    // 3. 초보운전
-    BEGINNER,
+    UserType(String label) {
+        this.label = label;
+    }
 
-    // 4. 앱테크
-    REWARD,
+    public static UserType fromLabel(String label) {
+        for (UserType type : values()) {
+            if (type.label.equals(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown label: " + label);
+    }
 
-    // 5. 차량 관리
-    MAINTENANCE,
-
-    // 6. 탄소 절감
-    CARBON,
-
-    // 7. 드라이브 스타
-    DRIVESTAR,
-
-    // 8. 드라이빙 테크닉
-    TECHNIQUE
+    public String getLabel() {
+        return label;
+    }
 }
+

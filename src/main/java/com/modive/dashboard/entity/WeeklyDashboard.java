@@ -21,7 +21,7 @@ public class WeeklyDashboard {
     private String userId;
 
     //@DynamoDBTypeConvertedEnum
-    private String userType;
+    private UserType userType;
 
     private int driveCount;
     private ScoreDto scores;

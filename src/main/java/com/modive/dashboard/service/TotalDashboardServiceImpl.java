@@ -107,22 +107,31 @@ public class TotalDashboardServiceImpl implements TotalDashboardService {
                 .toList();
 
         UserTypeResponse userTypeResponse = userClient.getUserInterest(userId);
-        String userType = userTypeResponse.data;
+        String userTypeString = userTypeResponse.data;
+        UserType userType = UserType.fromLabel(userTypeString);
+
+        UserInfoResponse userInfoResponse = userClient.getUser(userId);
+        String nickname = userInfoResponse.data.nickname;
 
         if (userType == null) {
             throw new NotFoundException("[" + userId + "]에 해당하는 UserType을 받아올 수 없습니다.");
         }
+        if (nickname == null) {
+            throw new NotFoundException("[" + userId + "]에 해당하는 nickname을 받아올 수 없습니다.");
+        }
 
         report.setUserId(userId);
         report.setUserType(userType);
+        report.setNickname(nickname);
         report.setDriveCount(dashboards.size());
         report.setScores(scoreCalculator.calculateAverageScore(scores));
 
         // AI Agent에서 받아오는 부분
+        System.out.println(report);
         ReportResponse response = reportClient.getReport(report.ToReportRequest());
 
         if (response == null || response.getCode() != 200) {
-            throw new NotFoundException("시스템 장애로 리포트를 받아올 수 없습니다.");
+            throw new NotFoundException("AI Agent 장애로 리포트를 받아올 수 없습니다.");
         }
 
         report.setTotalFeedback(response.getData().totalFeedback);

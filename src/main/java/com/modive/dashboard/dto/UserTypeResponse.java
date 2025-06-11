@@ -1,5 +1,6 @@
 package com.modive.dashboard.dto;
 
+import com.modive.dashboard.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
