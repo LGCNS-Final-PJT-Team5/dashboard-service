@@ -313,25 +313,15 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         drive.setSpeedRate(speedRateList);
 
         // ReactionTimes
-        List<Drive.StartEndTime> reactionTimes = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
-            Instant d = startTime.plusSeconds(i * 1020);
-            Drive.StartEndTime r = new Drive.StartEndTime(d, d.plusSeconds(2));
-            reactionTimes.add(r);
-        }
-        drive.setReactionTimes(reactionTimes);
+        drive.setReactionTimes(generateRandomInstants(startTime, endTime, 8));
+
 
         // LaneDepartures
         drive.setLaneDepartures(generateRandomInstants(startTime, endTime, 6));
 
         // FollowingDistanceEvents
-        List<Drive.StartEndTime> distanceTimes = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            Instant d = startTime.plusSeconds(i * 1020);
-            Drive.StartEndTime r = new Drive.StartEndTime(d, d.plusSeconds(2));
-            distanceTimes.add(r);
-        }
-        drive.setFollowingDistanceEvents(distanceTimes);
+        drive.setFollowingDistanceEvents(generateRandomInstants(startTime, endTime, 8));
+
 
         // InactiveMoments
         drive.setInactiveMoments(generateRandomInstants(startTime, endTime, 6));
