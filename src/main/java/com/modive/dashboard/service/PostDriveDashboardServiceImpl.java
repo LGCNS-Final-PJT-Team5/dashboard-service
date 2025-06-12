@@ -64,8 +64,8 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
         SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
         System.out.println(params); //임시
-        DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(request);
-
+        // DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(request);
+        DriveFeedbacksDto feedbacks = null;
         // 1-4. 저장
         DriveDashboard dashboard = new DriveDashboard();
 
