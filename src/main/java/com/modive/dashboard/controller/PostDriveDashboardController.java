@@ -22,7 +22,7 @@ import java.util.List;
 public class PostDriveDashboardController {
 
     private final JwtUtils jwtUtils;
-
+    private int cnt = 0;
     @Autowired
     private PostDriveDashboardService postDriveDashboardService;
 
@@ -33,7 +33,8 @@ public class PostDriveDashboardController {
             @RequestParam String driveId
     ) {
 
-        System.out.println("대시보드 생성 API 호출됨.");
+        System.out.println("대시보드 생성 API 호출됨 >> "+ (cnt++));
+
         postDriveDashboardService.createPostDriveDashboard(userId, driveId);
 
         return ResponseEntity.noContent().build();
