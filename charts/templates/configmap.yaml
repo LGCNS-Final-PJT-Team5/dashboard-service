@@ -7,6 +7,14 @@ metadata:
     version: {{ .Chart.AppVersion | default "1.0" }}
 data:
   application.yml: |
+    logging:
+      level:
+        root: INFO
+        com.modive.dashboard: DEBUG
+        org.springframework.web: INFO
+        org.springframework.scheduling: DEBUG
+        software.amazon.awssdk.services.dynamodb: DEBUG
+        com.zaxxer.hikari: INFO
     server:
       port: {{ .Values.config.server.port | default 8080 }}
     spring:
