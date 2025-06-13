@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface LLMClient {
 
     @PostMapping("/llm/post-feedbacks")
-    DriveFeedbacksDto getDriveFeedbacks(@RequestBody SingleDriveFeedbackRequest params);
+    DriveFeedbacksDto getDriveFeedbacksAsync(@RequestBody SingleDriveFeedbackRequest params);
 
 }

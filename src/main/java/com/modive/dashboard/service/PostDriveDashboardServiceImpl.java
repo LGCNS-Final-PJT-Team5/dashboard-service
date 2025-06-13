@@ -13,6 +13,7 @@ import com.modive.dashboard.repository.DriveRepository;
 import com.modive.dashboard.tools.LLMRequestGenerator;
 import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.tools.ScoreCalculator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 public class PostDriveDashboardServiceImpl implements PostDriveDashboardService {
     @Autowired
@@ -31,7 +33,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     @Autowired
     private DriveDashboardRepository driveDashboardRepository;
     @Autowired
-    private LLMClient llmClient;
+    private LLMService llmService;
     @Autowired
     private LLMRequestGenerator llmRequestGenerator;
     @Autowired
@@ -60,13 +62,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         // 1-2. 점수 산정
         ScoreDto score = scoreCalculator.calculateDriveScore(data);
 
-        // 1-3. 피드백 받아오기
-        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
-        SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
-        System.out.println(params); //임시
-        // DriveFeedbacksDto feedbacks = llmClient.getDriveFeedbacks(request);
-        DriveFeedbacksDto feedbacks = null;
-        // 1-4. 저장
+        // 1-3. 저장
         DriveDashboard dashboard = new DriveDashboard();
 
         dashboard.setUserId(userId);
@@ -74,13 +70,30 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         dashboard.setStartTime(data.getStartTime());
         dashboard.setEndTime(data.getEndTime());
         dashboard.setScores(score);
-        dashboard.setFeedbacks(feedbacks);
+        dashboard.setFeedbacks(null);
 
-        // 비동기 처리하자.
         List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
         driveDashboardRepository.save(dashboard);
         totalDashboardService.updateStatistics(data, score);
         if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 0) EarnReward(dashboard, scoreList);
+        System.out.println("점수 업데이트 완료!");
+        // 1-4. 피드백 받아오기 (비동기 피드백 처리 (LLM 호출 후 DB 업데이트))
+        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
+        SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
+
+        llmService.requestFeedbackAsync(request)
+                .thenAccept(feedbacks -> {
+                    DriveDashboard saved = driveDashboardRepository.findById(userId, driveId);
+                    if (saved != null) {
+                        saved.setFeedbacks(feedbacks);
+                        driveDashboardRepository.save(saved);
+                        System.out.println("LLM 피드백 업데이트 완료!");
+                    }
+                })
+                .exceptionally(ex -> {
+                    log.error("LLM 피드백 생성 실패: {}", ex.getMessage());
+                    return null;
+                });
     }
 
     // 1-5. 씨앗 적립 요청
