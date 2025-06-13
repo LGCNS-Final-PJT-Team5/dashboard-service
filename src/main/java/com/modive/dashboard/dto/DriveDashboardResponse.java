@@ -24,8 +24,7 @@ public class DriveDashboardResponse {
         this.endTime = dashboard.getEndTime();
         this.scores = dashboard.getScores();
 
-        if (dashboard.getFeedbacks() != null)
-        {
+        if (dashboard.getFeedbacks() != null) {
             this.feedback = dashboard.getFeedbacks().totalFeedback;
         }
     }

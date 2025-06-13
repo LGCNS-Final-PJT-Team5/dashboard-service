@@ -140,8 +140,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         idling.score = dashboard.getScores().idlingScore;
         speedMaintain.score = dashboard.getScores().speedMaintainScore;
 
-        idling.feedback = dashboard.getFeedbacks().idlingTimeMinutesFeedback;
-        speedMaintain.feedback = dashboard.getFeedbacks().steadySpeedRatioFeedback;
+        if (dashboard.getFeedbacks() != null) {
+            idling.feedback = dashboard.getFeedbacks().idlingTimeMinutesFeedback;
+            speedMaintain.feedback = dashboard.getFeedbacks().steadySpeedRatioFeedback;
+        }
 
         idling.graph = drive.getIdlingPeriods();
         speedMaintain.graph = drive.getSpeedRate();
@@ -169,9 +171,11 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         sharpTurn.score = dashboard.getScores().sharpTurnScore;
         overSpeed.score = dashboard.getScores().overSpeedScore;
 
-        acceleration.feedback = dashboard.getFeedbacks().rapidAccelerationDecelerationCountFeedback;
-        sharpTurn.feedback = dashboard.getFeedbacks().sharpTurnCountFeedback;
-        overSpeed.feedback = dashboard.getFeedbacks().overspeedCountFeedback;
+        if (dashboard.getFeedbacks() != null) {
+            acceleration.feedback = dashboard.getFeedbacks().rapidAccelerationDecelerationCountFeedback;
+            sharpTurn.feedback = dashboard.getFeedbacks().sharpTurnCountFeedback;
+            overSpeed.feedback = dashboard.getFeedbacks().overspeedCountFeedback;
+        }
 
         acceleration.graph = drive.getSuddenAccelerations();
         sharpTurn.graph = drive.getSharpTurns();
@@ -199,8 +203,10 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         drivingTime.score = dashboard.getScores().drivingTimeScore;
         inactivity.score = dashboard.getScores().inactivityScore;
 
-        drivingTime.feedback = dashboard.getFeedbacks().totalDrivingMinutesFeedback;
-        inactivity.feedback = dashboard.getFeedbacks().inactivityCountFeedback;
+        if (dashboard.getFeedbacks() != null) {
+            drivingTime.feedback = dashboard.getFeedbacks().totalDrivingMinutesFeedback;
+            inactivity.feedback = dashboard.getFeedbacks().inactivityCountFeedback;
+        }
 
         drivingTime.graph = List.of(
                 Map.of("startTime", drive.getStartTime(), "endTime", drive.getEndTime()));
@@ -229,9 +235,11 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         laneDeparture.score = dashboard.getScores().laneDepartureScore;
         followingDistance.score = dashboard.getScores().followingDistanceScore;
 
-        reaction.feedback = dashboard.getFeedbacks().reactionDelayCountFeedback;
-        laneDeparture.feedback = dashboard.getFeedbacks().laneDepartureCountFeedback;
-        followingDistance.feedback = dashboard.getFeedbacks().safeDistanceNotMaintainCountFeedback;
+        if (dashboard.getFeedbacks() != null) {
+            reaction.feedback = dashboard.getFeedbacks().reactionDelayCountFeedback;
+            laneDeparture.feedback = dashboard.getFeedbacks().laneDepartureCountFeedback;
+            followingDistance.feedback = dashboard.getFeedbacks().safeDistanceNotMaintainCountFeedback;
+        }
 
         reaction.graph = drive.getReactionTimes();
         laneDeparture.graph = drive.getLaneDepartures();
