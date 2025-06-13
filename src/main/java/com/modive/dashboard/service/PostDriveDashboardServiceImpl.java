@@ -41,7 +41,6 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     @Autowired
     private RewardClient rewardClient;
 
-    int cnt = 0;
     // 1. 주행 후 대시보드 생성
     @Override
     public void createPostDriveDashboard(String userId, String driveId) {
@@ -77,7 +76,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
         driveDashboardRepository.save(dashboard);
         totalDashboardService.updateStatistics(data, score);
         if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 0) EarnReward(dashboard, scoreList);
-        System.out.println("점수 업데이트 완료! >> Thread : " + cnt);
+        System.out.println("점수 업데이트 완료!");
         // 1-4. 피드백 받아오기 (비동기 피드백 처리 (LLM 호출 후 DB 업데이트))
         DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
         SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
@@ -88,7 +87,7 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
                     if (saved != null) {
                         saved.setFeedbacks(feedbacks);
                         driveDashboardRepository.save(saved);
-                        System.out.println("LLM 피드백 업데이트 완료! >> Thread : " + cnt);
+                        System.out.println("LLM 피드백 업데이트 완료!");
                     }
                 })
                 .exceptionally(ex -> {
