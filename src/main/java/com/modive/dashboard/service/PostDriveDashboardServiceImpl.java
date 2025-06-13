@@ -13,6 +13,7 @@ import com.modive.dashboard.repository.DriveRepository;
 import com.modive.dashboard.tools.LLMRequestGenerator;
 import com.modive.dashboard.tools.NotFoundException;
 import com.modive.dashboard.tools.ScoreCalculator;
+import com.modive.dashboard.worker.DriveDashboardWorker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,74 +41,78 @@ public class PostDriveDashboardServiceImpl implements PostDriveDashboardService 
     private TotalDashboardService totalDashboardService;
     @Autowired
     private RewardClient rewardClient;
+    @Autowired
+    private DriveDashboardWorker driveDashboardWorker;
 
     // 1. 주행 후 대시보드 생성
     @Override
     public void createPostDriveDashboard(String userId, String driveId) {
 
-        DriveDashboard existing = driveDashboardRepository.findById(userId, driveId);
+        driveDashboardWorker.enqueue(driveId, userId);
 
-        if (existing != null) {
-            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 대시보드가 이미 생성되었습니다.");
-        }
-
-        // 1-1. 데이터 가져오기
-        Drive data = driveRepository.findById(userId, driveId);
-        // Drive data = getDummyDrive(userId, driveId);
-
-        if (data == null) {
-            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
-        }
-
-        // 1-2. 점수 산정
-        ScoreDto score = scoreCalculator.calculateDriveScore(data);
-
-        // 1-3. 저장
-        DriveDashboard dashboard = new DriveDashboard();
-
-        dashboard.setUserId(userId);
-        dashboard.setDriveId(driveId);
-        dashboard.setStartTime(data.getStartTime());
-        dashboard.setEndTime(data.getEndTime());
-        dashboard.setScores(score);
-        dashboard.setFeedbacks(null);
-
-        List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
-        driveDashboardRepository.save(dashboard);
-        totalDashboardService.updateStatistics(data, score);
-        if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 0) EarnReward(dashboard, scoreList);
-        System.out.println("점수 업데이트 완료!");
-        // 1-4. 피드백 받아오기 (비동기 피드백 처리 (LLM 호출 후 DB 업데이트))
-        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
-        SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
-
-        llmService.requestFeedbackAsync(request)
-                .thenAccept(feedbacks -> {
-                    DriveDashboard saved = driveDashboardRepository.findById(userId, driveId);
-                    if (saved != null) {
-                        saved.setFeedbacks(feedbacks);
-                        driveDashboardRepository.save(saved);
-                        System.out.println("LLM 피드백 업데이트 완료!");
-                    }
-                })
-                .exceptionally(ex -> {
-                    log.error("LLM 피드백 생성 실패: {}", ex.getMessage());
-                    return null;
-                });
+//        DriveDashboard existing = driveDashboardRepository.findById(userId, driveId);
+//
+//        if (existing != null) {
+//            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 대시보드가 이미 생성되었습니다.");
+//        }
+//
+//        // 1-1. 데이터 가져오기
+//        Drive data = driveRepository.findById(userId, driveId);
+//        // Drive data = getDummyDrive(userId, driveId);
+//
+//        if (data == null) {
+//            throw new NotFoundException("[" + driveId + "]에 해당하는 주행 데이터가 없습니다.");
+//        }
+//
+//        // 1-2. 점수 산정
+//        ScoreDto score = scoreCalculator.calculateDriveScore(data);
+//
+//        // 1-3. 저장
+//        DriveDashboard dashboard = new DriveDashboard();
+//
+//        dashboard.setUserId(userId);
+//        dashboard.setDriveId(driveId);
+//        dashboard.setStartTime(data.getStartTime());
+//        dashboard.setEndTime(data.getEndTime());
+//        dashboard.setScores(score);
+//        dashboard.setFeedbacks(null);
+//
+//        List<ScoreDto> scoreList = totalDashboardService.updateTotalDashboard(userId, dashboard);
+//        driveDashboardRepository.save(dashboard);
+//        totalDashboardService.updateStatistics(data, score);
+//        if (Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes() > 0) EarnReward(dashboard, scoreList);
+//        System.out.println("점수 업데이트 완료!");
+//        // 1-4. 피드백 받아오기 (비동기 피드백 처리 (LLM 호출 후 DB 업데이트))
+//        DriveFeedbackRequest params = llmRequestGenerator.generateDriveFeedbackRequest(data);
+//        SingleDriveFeedbackRequest request = llmRequestGenerator.convertToSingleDriveFeedbackRequest(params);
+//
+//        llmService.requestFeedbackAsync(request)
+//                .thenAccept(feedbacks -> {
+//                    DriveDashboard saved = driveDashboardRepository.findById(userId, driveId);
+//                    if (saved != null) {
+//                        saved.setFeedbacks(feedbacks);
+//                        driveDashboardRepository.save(saved);
+//                        System.out.println("LLM 피드백 업데이트 완료!");
+//                    }
+//                })
+//                .exceptionally(ex -> {
+//                    log.error("LLM 피드백 생성 실패: {}", ex.getMessage());
+//                    return null;
+//                });
     }
 
-    // 1-5. 씨앗 적립 요청
-    private void EarnReward(DriveDashboard dashboard, List<ScoreDto> scoreList) {
-        RewardDto.EarnComplexRequest earnComplexRequest = RewardDto.EarnComplexRequest.builder()
-                .driveId(dashboard.getDriveId())
-                .score((int) dashboard.getScores().getTotalScore())
-                .drivingTime((int) Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes())
-                .lastScore(scoreList.get(0).toScoreInfo())
-                .currentScore(scoreList.get(1).toScoreInfo())
-                .build();
-
-        rewardClient.earnReward(dashboard.getUserId(), earnComplexRequest);
-    }
+//    // 1-5. 씨앗 적립 요청
+//    private void EarnReward(DriveDashboard dashboard, List<ScoreDto> scoreList) {
+//        RewardDto.EarnComplexRequest earnComplexRequest = RewardDto.EarnComplexRequest.builder()
+//                .driveId(dashboard.getDriveId())
+//                .score((int) dashboard.getScores().getTotalScore())
+//                .drivingTime((int) Duration.between(dashboard.getStartTime(), dashboard.getEndTime()).toMinutes())
+//                .lastScore(scoreList.get(0).toScoreInfo())
+//                .currentScore(scoreList.get(1).toScoreInfo())
+//                .build();
+//
+//        rewardClient.earnReward(dashboard.getUserId(), earnComplexRequest);
+//    }
 
     // 2. 주행 후 대시보드 조회
     @Override
